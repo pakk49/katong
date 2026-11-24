@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>ลอยกระทงด้วยกัน • Real-time Pixel World</title>
+  <title>ลอยกระทงด้วยกัน • 16-Bit Pixel Riverside</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #07131c;
+      background: #061018;
       color: #f8fafc;
       user-select: none;
     }
@@ -31,7 +31,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #061018;
+      background: radial-gradient(circle at center, #0c1f2e 0%, #040b11 100%);
     }
     canvas#world {
       width: 100%;
@@ -58,7 +58,7 @@
     }
     .pill {
       pointer-events: auto;
-      background: rgba(13, 21, 32, 0.85);
+      background: rgba(11, 19, 30, 0.86);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 14px;
@@ -68,7 +68,14 @@
       flex-wrap: wrap;
       gap: 7px;
       font-size: 13px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+    .net-badge {
+      font-size: 11px;
+      color: #94a3b8;
+      background: rgba(255,255,255,0.07);
+      padding: 2px 7px;
+      border-radius: 8px;
     }
     .btn {
       border: none;
@@ -92,7 +99,7 @@
     .btn-ghost { background: rgba(255, 255, 255, 0.13); }
     .btn-ghost.active {
       background: linear-gradient(135deg, #ec4899, #f43f5e);
-      box-shadow: 0 0 12px rgba(236, 72, 153, 0.55);
+      box-shadow: 0 0 14px rgba(236, 72, 153, 0.6);
     }
 
     /* Toast */
@@ -101,7 +108,7 @@
       top: 68px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(13, 21, 32, 0.95);
+      background: rgba(11, 19, 30, 0.96);
       border: 1px solid #fbbf24;
       color: #fef3c7;
       padding: 9px 18px;
@@ -111,7 +118,7 @@
       display: none;
       text-align: center;
       max-width: 90vw;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
     }
 
     /* HUD Bottom */
@@ -131,7 +138,7 @@
       pointer-events: auto;
       width: 330px;
       max-width: 62vw;
-      background: rgba(13, 21, 32, 0.85);
+      background: rgba(11, 19, 30, 0.86);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 14px;
@@ -139,7 +146,7 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     }
     .chat-messages {
       max-height: 92px;
@@ -182,12 +189,12 @@
     .emote-bar {
       display: flex;
       gap: 4px;
-      background: rgba(13, 21, 32, 0.85);
+      background: rgba(11, 19, 30, 0.86);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 13px;
       padding: 5px 9px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     }
     .emote-btn {
       background: transparent;
@@ -212,15 +219,15 @@
       padding: 14px;
     }
     .card {
-      background: #131f2e;
+      background: #121e2d;
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 20px;
       padding: 20px;
-      width: 450px;
+      width: 460px;
       max-width: 100%;
-      max-height: 93vh;
+      max-height: 94vh;
       overflow-y: auto;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
     }
     .card::-webkit-scrollbar { width: 5px; }
     .card::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
@@ -305,7 +312,7 @@
       height: 26px;
       border-radius: 50%;
       cursor: pointer;
-      border: 2px solid rgba(255,255,255,0.18);
+      border: 2px solid rgba(255,255,255,0.2);
       transition: transform 0.12s, border-color 0.12s;
       flex-shrink: 0;
     }
@@ -320,12 +327,11 @@
       height: 26px;
       border-radius: 50%;
       overflow: hidden;
-      border: 2px dashed rgba(255,255,255,0.45);
+      border: 2px dashed rgba(255,255,255,0.5);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
       background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
     }
     .color-picker-wrap input[type="color"] {
@@ -343,24 +349,23 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at center, #1b3147 0%, #0b131d 100%);
-      border: 1px solid rgba(255,255,255,0.14);
+      background: radial-gradient(circle at center, #234736 0%, #0b131d 100%);
+      border: 1px solid rgba(255,255,255,0.16);
       border-radius: 14px;
-      padding: 8px;
+      padding: 10px;
       margin-bottom: 12px;
-      position: relative;
     }
     .preview-controls {
       display: flex;
       gap: 6px;
-      margin-top: 4px;
+      margin-top: 6px;
     }
     .mini-btn {
       background: rgba(255,255,255,0.12);
       border: none;
       color: #e2e8f0;
       border-radius: 6px;
-      padding: 2px 8px;
+      padding: 3px 9px;
       font-size: 11px;
       cursor: pointer;
     }
@@ -370,7 +375,8 @@
 <body>
 
 <div id="game-wrap">
-  <canvas id="world" width="960" height="540"></canvas>
+  <!-- Native 16-bit Pixel Art Resolution: 480x270 (16:9 integer-scaled cleanly) -->
+  <canvas id="world" width="480" height="270"></canvas>
 
   <!-- Top HUD -->
   <div class="hud-top">
@@ -378,6 +384,7 @@
       <span id="status-dot" title="สถานะการเชื่อมต่อ">🟡</span>
       <span>ห้อง: <strong id="hud-room">-</strong></span>
       <span>👥 <strong id="hud-players">1</strong></span>
+      <span class="net-badge" id="hud-net" title="Authoritative Tick & RTT">20Hz • 0ms</span>
       <button class="btn btn-ghost" id="btn-invite">🔗 ชวนแฟน</button>
     </div>
 
@@ -395,7 +402,7 @@
   <div class="hud-bottom">
     <div class="chat-panel">
       <div class="chat-messages" id="chat-messages">
-        <div style="color:#fbbf24;">✨ แตะบนพื้นหรือกด WASD / ลูกศร เพื่อเดินริมตลิ่ง</div>
+        <div style="color:#fbbf24;">✨ แตะบนพื้นหรือกด WASD / ลูกศร เพื่อเดินเล่นริมแม่น้ำ</div>
       </div>
       <form class="chat-form" id="chat-form">
         <input type="text" id="chat-input" placeholder="พิมพ์ข้อความขึ้นบนหัว..." maxlength="80" autocomplete="off" />
@@ -419,10 +426,10 @@
 <div class="overlay" id="modal-join">
   <div class="card">
     <h2 id="modal-title">🏮 แต่งตัว & เข้าสู่ริมแม่น้ำ</h2>
-    <p class="sub" id="modal-sub">เลือกเพศ ทรงผม สีผม และชุดไทยได้ตามใจชอบ</p>
+    <p class="sub" id="modal-sub">เลือกเพศ ทรงผม สีผม และชุดไทยสไตล์พิกเซลน่ารัก</p>
 
     <div class="preview-box">
-      <canvas id="avatar-preview" width="110" height="110" style="width:110px;height:110px;image-rendering:pixelated;"></canvas>
+      <canvas id="avatar-preview" width="96" height="96" style="width:96px;height:96px;image-rendering:pixelated;"></canvas>
       <div class="preview-controls">
         <button type="button" class="mini-btn" id="btn-rot-left">↺ หมุนซ้าย</button>
         <button type="button" class="mini-btn" id="btn-rot-right">หมุนขวา ↻</button>
@@ -456,11 +463,11 @@
           <option value="1" selected>ผมยาวตรงสลวย</option>
           <option value="2">ผมประบ่าปลายงุ้ม</option>
           <option value="3">ผมเกล้ามวยไทย + ปิ่นทอง</option>
-          <option value="4">ผมมัดหางม้าสูง</option>
-          <option value="5">ผมเปียสองข้างน่ารัก</option>
+          <option value="4">ผมแกละสองข้างน่ารัก</option>
+          <option value="5">ผมเปียคู่ผูกโบว์</option>
           <option value="6">ผมแสกกลางสไตล์เกาหลี</option>
           <option value="7">มงกุฎดอกไม้</option>
-          <option value="8">หมวกหมาป่าชนเผ่า (เหมือนในรูป)</option>
+          <option value="8">หมวกหมาป่าชนเผ่า</option>
         </select>
       </div>
 
@@ -468,11 +475,11 @@
         <label>เลือกชุดไทย & เครื่องแต่งกาย</label>
         <select id="inp-outfit-style">
           <option value="chakkri" selected>ชุดไทยจักรี (สไบเฉียง + ผ้าถุงหน้านาง)</option>
-          <option value="siwalai">ชุดไทยศิวาลัย / บรมพิมานแขนยาว</option>
+          <option value="siwalai">ชุดไทยศิวาลัย (แขนยาวขลิบทอง)</option>
           <option value="raj_pattern">ชุดไทยราชปะแตน + โจงกระเบน</option>
           <option value="lanna">ชุดไทยล้านนา (เสื้อปั๊ด + ผ้าซิ่นตีนจก)</option>
-          <option value="boran">ชุดไทยโบราณ (ผ้าแถบ / เสื้อม่อฮ่อม-ผ้าขาวม้า)</option>
-          <option value="tribal">ชุดชนเผ่าพื้นเมือง (สไตล์ในรูป)</option>
+          <option value="boran">ชุดไทยโบราณ (ผ้าแถบ / ผ้าขาวม้า)</option>
+          <option value="tribal">ชุดชนเผ่าพื้นเมือง</option>
         </select>
       </div>
     </div>
@@ -517,7 +524,7 @@
       <label>รูปแบบกระทง</label>
       <select id="k-style">
         <option value="lotus">กระทงใบตอง-ดอกบัวเรืองแสง</option>
-        <option value="raft">กระทงแพไม้ไผ่ (สไตล์ในรูป)</option>
+        <option value="raft">กระทงแพไม้ไผ่</option>
         <option value="leaf">กระทงใบบัวธรรมชาติ</option>
         <option value="heart">กระทงคู่รูปหัวใจ 💕</option>
       </select>
@@ -546,6 +553,9 @@
 </div>
 
 <script>
+  // Logical 16-bit SNES/GBA canvas resolution (480x270)
+  const W = 480;
+  const H = 270;
   const canvas = document.getElementById('world');
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = false;
@@ -561,12 +571,12 @@
 
   // Customization State & Palettes
   const skinColors = ['#ffe5d0', '#ffdbac', '#f1c27d', '#e0ac69', '#c68642', '#8d5524'];
-  const hairColors = ['#1c1410', '#4a2c18', '#9a6b32', '#e2b758', '#be123c', '#6d28d9', '#e2e8f0'];
+  const hairColors = ['#2b1910', '#54301a', '#a16c2c', '#f5c242', '#be123c', '#6d28d9', '#e2e8f0'];
   const outfitColors = ['#f472b6', '#f8fafc', '#fbbf24', '#38bdf8', '#34d399', '#a78bfa', '#e11d48', '#8d5524'];
   const bottomColors = ['#7e22ce', '#be185d', '#1e40af', '#065f46', '#92400e', '#b91c1c', '#334155', '#d97706'];
 
   let selGender = 'female';
-  let selSkin = skinColors[2];
+  let selSkin = skinColors[1];
   let selHair = hairColors[0];
   let selOutfit = outfitColors[0];
   let selBottom = bottomColors[0];
@@ -606,7 +616,7 @@
     }
   }
 
-  setupSwatches('sw-skin', skinColors, 2, c => selSkin = c, false);
+  setupSwatches('sw-skin', skinColors, 1, c => selSkin = c, false);
   setupSwatches('sw-hair', hairColors, 0, c => selHair = c, true);
   setupSwatches('sw-outfit', outfitColors, 0, c => selOutfit = c, true);
   setupSwatches('sw-bottom', bottomColors, 0, c => selBottom = c, true);
@@ -623,14 +633,12 @@
     renderPreview();
   };
 
-  // Gender buttons
   document.querySelectorAll('.gender-btn').forEach(btn => {
     btn.onclick = () => {
       document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       selGender = btn.dataset.gender;
 
-      // Auto-suggest matching Thai outfit & hair when switching gender (user can still customize freely)
       const hairSel = document.getElementById('inp-hair-style');
       const outfitSel = document.getElementById('inp-outfit-style');
       if (selGender === 'male') {
@@ -665,11 +673,10 @@
   }
 
   function renderPreview() {
-    prevCtx.clearRect(0, 0, 110, 110);
+    prevCtx.clearRect(0, 0, 96, 96);
     prevCtx.save();
-    // Draw at 1.6x scale in preview box so user can see every detail of Thai outfit
-    prevCtx.translate(55, 92);
-    prevCtx.scale(1.65, 1.65);
+    prevCtx.translate(48, 80);
+    prevCtx.scale(3, 3);
     const dummy = {
       id: 'preview',
       name: '',
@@ -680,12 +687,21 @@
       kneeling: false,
       avatar: getCurrentAvatarConfig()
     };
-    drawCharacter(prevCtx, dummy, performance.now(), true);
+    drawChibiCharacter(prevCtx, dummy, performance.now(), true);
     prevCtx.restore();
   }
   renderPreview();
 
-  // ==================== GAME STATE ====================
+  // ==================== AUTHORITATIVE NETCODE ARCHITECTURE ====================
+  // - Host-authoritative 20Hz simulation tick (50ms)
+  // - Client-side prediction with sequence-numbered input ring buffer & smooth reconciliation
+  // - Snapshot interpolation buffer (~90ms render delay) for jitter-free remote players
+  // - Quantized integer coordinates & bitpacked flags for minimal bandwidth footprint
+  const TICK_RATE = 20;
+  const TICK_DT = 1 / TICK_RATE;
+  const MOVE_SPEED = 72; // logical px/sec in 480x270 space
+  const INTERP_DELAY_MS = 90;
+
   let peer = null;
   let isHost = false;
   let hostConn = null;
@@ -698,12 +714,19 @@
   const lanterns = [];
   const emotes = [];
   const bubbles = new Map();
+  const seenEvents = new Set();
   let holdingHands = false;
+
+  // Client-side prediction & reconciliation state
+  let inputSeq = 0;
+  const pendingInputs = [];
+  let reconcileErrX = 0;
+  let reconcileErrY = 0;
+  let measuredRtt = 0;
+  let lastPingSent = 0;
 
   const keys = {};
   let clickTarget = null;
-  let lastNetSync = 0;
-  let lastHeartbeat = 0;
 
   const PEER_OPTS = {
     config: {
@@ -714,6 +737,20 @@
       ]
     }
   };
+
+  const DIR_TO_CODE = { down: 0, left: 1, right: 2, up: 3 };
+  const CODE_TO_DIR = ['down', 'left', 'right', 'up'];
+
+  function packFlags(dir, moving, kneeling) {
+    return (DIR_TO_CODE[dir] || 0) | (moving ? 4 : 0) | (kneeling ? 8 : 0);
+  }
+  function unpackFlags(flags) {
+    return {
+      dir: CODE_TO_DIR[flags & 3] || 'down',
+      moving: Boolean(flags & 4),
+      kneeling: Boolean(flags & 8)
+    };
+  }
 
   function showToast(html, duration = 4500) {
     const el = document.getElementById('toast');
@@ -739,7 +776,33 @@
     document.getElementById('hud-players').textContent = players.size;
   }
 
-  // ==================== P2P NETWORKING (100% GITHUB PAGES) ====================
+  function clampPlayablePos(x, y) {
+    // Playable riverside promenade & meadow bounds in 480x270 space
+    let cx = Math.max(66, Math.min(458, x));
+    let cy = Math.max(82, Math.min(158, y));
+    // Keep out of the stone altar monument core
+    if (cx > 235 && cx < 305 && cy < 95) {
+      cy = 95;
+    }
+    return { x: cx, y: cy };
+  }
+
+  function stepMovement(state, vx, vy, dt) {
+    if (vx === 0 && vy === 0) {
+      state.moving = false;
+      return;
+    }
+    const len = Math.hypot(vx, vy);
+    const nx = vx / len;
+    const ny = vy / len;
+    const clamped = clampPlayablePos(state.x + nx * MOVE_SPEED * dt, state.y + ny * MOVE_SPEED * dt);
+    state.x = clamped.x;
+    state.y = clamped.y;
+    state.moving = true;
+    state.dir = Math.abs(nx) > Math.abs(ny) ? (nx > 0 ? 'right' : 'left') : (ny > 0 ? 'down' : 'up');
+  }
+
+  // ==================== P2P NETWORKING ====================
   function hostBroadcast(msg, exceptId = null) {
     guestConns.forEach((conn, pid) => {
       if (pid !== exceptId && conn.open) {
@@ -757,8 +820,8 @@
   }
 
   function makePlayerObj(id, name, avatar) {
-    const sx = 410 + Math.floor(Math.random() * 140);
-    const sy = 268 + Math.floor(Math.random() * 24);
+    const sx = 205 + Math.floor(Math.random() * 70);
+    const sy = 136 + Math.floor(Math.random() * 14);
     return {
       id,
       name: (name || 'นักเดินทาง').slice(0, 16),
@@ -769,13 +832,18 @@
       renderY: sy,
       dir: 'down',
       moving: false,
-      kneeling: false
+      kneeling: false,
+      lastAckSeq: 0,
+      lastSentX: sx,
+      lastSentY: sy,
+      lastSentFlags: 0,
+      snapshots: [{ t: performance.now(), x: sx, y: sy, dir: 'down', moving: false, kneeling: false }]
     };
   }
 
   function joinRoom(rawRoom, rawName, avatar) {
     roomCode = (rawRoom || 'LOVE2026').toUpperCase().replace(/[^A-Z0-9]/g, '') || 'LOVE2026';
-    const hostId = 'katong-pakk49-room-' + roomCode;
+    const hostId = 'katong-pakk49-v3-' + roomCode;
     document.getElementById('hud-room').textContent = roomCode;
 
     const btnStart = document.getElementById('btn-start');
@@ -793,6 +861,7 @@
       updateHudCount();
 
       document.getElementById('status-dot').textContent = '🟢';
+      document.getElementById('hud-net').textContent = 'Host • 20Hz';
       document.getElementById('modal-join').style.display = 'none';
       appendChat('ระบบ', `เปิดห้อง ${roomCode} แล้ว! กดปุ่ม "🔗 ชวนแฟน" ด้านบนส่งให้แฟนได้เลย 💕`, '#fbbf24');
 
@@ -808,7 +877,7 @@
             appendChat('ระบบ', `${p.name} ออกจากห้องแล้ว`, '#94a3b8');
             players.delete(conn.peer);
             updateHudCount();
-            hostBroadcast({ type: 'left', id: conn.peer });
+            hostBroadcast({ t: 'L', id: conn.peer });
           }
         });
       });
@@ -842,7 +911,7 @@
         hasJoinedRoom = true;
         document.getElementById('status-dot').textContent = '🟢';
         document.getElementById('modal-join').style.display = 'none';
-        hostConn.send({ type: 'join', player: me });
+        hostConn.send({ t: 'J', p: { id: me.id, name: me.name, avatar: me.avatar, x: me.x, y: me.y } });
         appendChat('ระบบ', `เชื่อมต่อเข้าห้อง ${roomCode} สำเร็จแล้ว 💕`, '#fbbf24');
       });
 
@@ -863,111 +932,194 @@
   }
 
   function onHostData(conn, msg) {
-    if (!msg || !msg.type) return;
+    if (!msg || !msg.t) return;
 
-    if (msg.type === 'join' && msg.player) {
-      const np = msg.player;
-      np.id = conn.peer;
-      np.renderX = np.x;
-      np.renderY = np.y;
+    if (msg.t === 'J' && msg.p) {
+      const np = makePlayerObj(conn.peer, msg.p.name, msg.p.avatar);
+      const clamped = clampPlayablePos(msg.p.x, msg.p.y);
+      np.x = np.renderX = clamped.x;
+      np.y = np.renderY = clamped.y;
       players.set(np.id, np);
       updateHudCount();
       appendChat('ระบบ', `${np.name} เดินทางมาถึงริมแม่น้ำแล้ว 💕`, '#f472b6');
 
       conn.send({
-        type: 'init',
-        players: Array.from(players.values()),
+        t: 'I',
+        players: Array.from(players.values()).map(pl => ({
+          id: pl.id, name: pl.name, avatar: pl.avatar,
+          x: Math.round(pl.x), y: Math.round(pl.y),
+          f: packFlags(pl.dir, pl.moving, pl.kneeling)
+        })),
         krathongs
       });
-      hostBroadcast({ type: 'joined', player: np }, conn.peer);
-    } else if (msg.type === 'move') {
+      hostBroadcast({
+        t: 'N',
+        p: { id: np.id, name: np.name, avatar: np.avatar, x: Math.round(np.x), y: Math.round(np.y) }
+      }, conn.peer);
+
+    } else if (msg.t === 'U') {
+      // Authoritative validation of client input packet
       const p = players.get(conn.peer);
       if (p) {
-        p.x = msg.x; p.y = msg.y; p.dir = msg.dir; p.moving = msg.moving; p.kneeling = msg.kneeling;
-        hostBroadcast({ type: 'move', id: conn.peer, x: p.x, y: p.y, dir: p.dir, moving: p.moving, kneeling: p.kneeling }, conn.peer);
+        const flags = unpackFlags(msg.f || 0);
+        const clamped = clampPlayablePos(msg.x, msg.y);
+        // Anti-teleport speed check (allow generous 240 px/s burst for latency jitter)
+        const dist = Math.hypot(clamped.x - p.x, clamped.y - p.y);
+        if (dist < 110) {
+          p.x = clamped.x;
+          p.y = clamped.y;
+        }
+        p.dir = flags.dir;
+        p.moving = flags.moving;
+        p.kneeling = flags.kneeling;
+        if (typeof msg.s === 'number') p.lastAckSeq = msg.s;
+        p.snapshots.push({ t: performance.now(), x: p.x, y: p.y, dir: p.dir, moving: p.moving, kneeling: p.kneeling });
+        if (p.snapshots.length > 16) p.snapshots.shift();
       }
-    } else if (msg.type === 'avatar') {
+
+    } else if (msg.t === 'P') {
+      conn.send({ t: 'Q', ts: msg.ts });
+
+    } else if (msg.t === 'A') {
       const p = players.get(conn.peer);
-      if (p && msg.avatar) {
-        p.avatar = msg.avatar;
-        hostBroadcast({ type: 'avatar', id: conn.peer, avatar: p.avatar }, conn.peer);
+      if (p && msg.av) {
+        p.avatar = msg.av;
+        hostBroadcast({ t: 'A', id: conn.peer, av: p.avatar }, conn.peer);
       }
-    } else if (msg.type === 'chat') {
+
+    } else if (msg.t === 'C') {
+      if (seenEvents.has(msg.eid)) return;
+      seenEvents.add(msg.eid);
       const p = players.get(conn.peer);
       const name = p ? p.name : 'เพื่อน';
-      appendChat(name, msg.text);
-      bubbles.set(conn.peer, { text: msg.text, exp: Date.now() + 5500 });
-      hostBroadcast({ type: 'chat', id: conn.peer, text: msg.text }, conn.peer);
-    } else if (msg.type === 'emote') {
-      spawnEmote(conn.peer, msg.emoji);
-      hostBroadcast({ type: 'emote', id: conn.peer, emoji: msg.emoji }, conn.peer);
-    } else if (msg.type === 'krathong') {
-      krathongs.push(msg.krathong);
+      appendChat(name, msg.txt);
+      bubbles.set(conn.peer, { text: msg.txt, exp: Date.now() + 5500 });
+      hostBroadcast({ t: 'C', eid: msg.eid, id: conn.peer, txt: msg.txt }, conn.peer);
+
+    } else if (msg.t === 'E') {
+      if (seenEvents.has(msg.eid)) return;
+      seenEvents.add(msg.eid);
+      spawnEmote(conn.peer, msg.em);
+      hostBroadcast({ t: 'E', eid: msg.eid, id: conn.peer, em: msg.em }, conn.peer);
+
+    } else if (msg.t === 'K') {
+      if (seenEvents.has(msg.k.id)) return;
+      seenEvents.add(msg.k.id);
+      krathongs.push(msg.k);
       if (krathongs.length > 60) krathongs.shift();
-      appendChat('🪷', `${msg.krathong.owner} ลอยกระทง: "${msg.krathong.wish}"`, '#fde047');
-      hostBroadcast({ type: 'krathong', krathong: msg.krathong }, conn.peer);
-    } else if (msg.type === 'lantern') {
+      appendChat('🪷', `${msg.k.owner} ลอยกระทง: "${msg.k.wish}"`, '#fde047');
+      hostBroadcast({ t: 'K', k: msg.k }, conn.peer);
+
+    } else if (msg.t === 'O') {
+      if (seenEvents.has(msg.eid)) return;
+      seenEvents.add(msg.eid);
       spawnLantern(msg.x, msg.owner);
-      hostBroadcast({ type: 'lantern', x: msg.x, owner: msg.owner }, conn.peer);
+      hostBroadcast({ t: 'O', eid: msg.eid, x: msg.x, owner: msg.owner }, conn.peer);
     }
   }
 
   function onGuestData(msg) {
-    if (!msg || !msg.type) return;
+    if (!msg || !msg.t) return;
 
-    if (msg.type === 'init') {
-      msg.players.forEach(p => {
-        if (p.id === selfId) return;
-        p.renderX = p.x;
-        p.renderY = p.y;
-        players.set(p.id, p);
+    if (msg.t === 'I') {
+      msg.players.forEach(sp => {
+        if (sp.id === selfId) return;
+        const fl = unpackFlags(sp.f || 0);
+        const np = makePlayerObj(sp.id, sp.name, sp.avatar);
+        np.x = np.renderX = sp.x;
+        np.y = np.renderY = sp.y;
+        np.dir = fl.dir; np.moving = fl.moving; np.kneeling = fl.kneeling;
+        players.set(np.id, np);
       });
       krathongs = msg.krathongs || [];
       updateHudCount();
-    } else if (msg.type === 'joined' && msg.player) {
-      if (msg.player.id !== selfId) {
-        msg.player.renderX = msg.player.x;
-        msg.player.renderY = msg.player.y;
-        players.set(msg.player.id, msg.player);
+
+    } else if (msg.t === 'N' && msg.p) {
+      if (msg.p.id !== selfId) {
+        const np = makePlayerObj(msg.p.id, msg.p.name, msg.p.avatar);
+        np.x = np.renderX = msg.p.x;
+        np.y = np.renderY = msg.p.y;
+        players.set(np.id, np);
         updateHudCount();
-        appendChat('ระบบ', `${msg.player.name} เข้ามาในห้องแล้ว 💕`, '#f472b6');
+        appendChat('ระบบ', `${np.name} เข้ามาในห้องแล้ว 💕`, '#f472b6');
       }
-    } else if (msg.type === 'move') {
-      const p = players.get(msg.id);
-      if (p && msg.id !== selfId) {
-        p.x = msg.x; p.y = msg.y; p.dir = msg.dir; p.moving = msg.moving; p.kneeling = msg.kneeling;
-      }
-    } else if (msg.type === 'avatar') {
-      const p = players.get(msg.id);
-      if (p && msg.id !== selfId && msg.avatar) {
-        p.avatar = msg.avatar;
-      }
-    } else if (msg.type === 'sync') {
-      msg.players.forEach(sp => {
-        if (sp.id === selfId) return;
-        let p = players.get(sp.id);
-        if (!p) {
-          sp.renderX = sp.x; sp.renderY = sp.y;
-          players.set(sp.id, sp);
+
+    } else if (msg.t === 'S') {
+      // Authoritative world state snapshot from Host
+      const now = performance.now();
+      msg.ps.forEach(sp => {
+        const fl = unpackFlags(sp.f || 0);
+        if (sp.id === selfId) {
+          // Server Reconciliation for local player
+          const me = players.get(selfId);
+          if (!me) return;
+          while (pendingInputs.length && pendingInputs[0].seq <= sp.ack) {
+            pendingInputs.shift();
+          }
+          // Re-simulate unacknowledged inputs from authoritative server state
+          const sim = { x: sp.x, y: sp.y, dir: fl.dir, moving: fl.moving };
+          for (let i = 0; i < pendingInputs.length; i++) {
+            stepMovement(sim, pendingInputs[i].vx, pendingInputs[i].vy, pendingInputs[i].dt);
+          }
+          const errX = sim.x - me.x;
+          const errY = sim.y - me.y;
+          if (Math.hypot(errX, errY) > 1.5) {
+            reconcileErrX += (me.x - sim.x);
+            reconcileErrY += (me.y - sim.y);
+            me.x = sim.x;
+            me.y = sim.y;
+          }
         } else {
-          p.x = sp.x; p.y = sp.y; p.dir = sp.dir; p.moving = sp.moving; p.kneeling = sp.kneeling;
-          if (sp.avatar) p.avatar = sp.avatar;
+          let p = players.get(sp.id);
+          if (!p) {
+            p = makePlayerObj(sp.id, 'แฟน', {});
+            p.x = p.renderX = sp.x;
+            p.y = p.renderY = sp.y;
+            players.set(sp.id, p);
+            updateHudCount();
+          }
+          p.x = sp.x; p.y = sp.y;
+          p.dir = fl.dir; p.moving = fl.moving; p.kneeling = fl.kneeling;
+          p.snapshots.push({ t: now, x: sp.x, y: sp.y, dir: fl.dir, moving: fl.moving, kneeling: fl.kneeling });
+          if (p.snapshots.length > 16) p.snapshots.shift();
         }
       });
-      updateHudCount();
-    } else if (msg.type === 'chat') {
+
+    } else if (msg.t === 'Q') {
+      measuredRtt = Math.max(1, Math.round(performance.now() - msg.ts));
+      document.getElementById('hud-net').textContent = `20Hz • ${measuredRtt}ms`;
+
+    } else if (msg.t === 'A') {
       const p = players.get(msg.id);
-      appendChat(p ? p.name : 'แฟน', msg.text);
-      bubbles.set(msg.id, { text: msg.text, exp: Date.now() + 5500 });
-    } else if (msg.type === 'emote') {
-      spawnEmote(msg.id, msg.emoji);
-    } else if (msg.type === 'krathong') {
-      krathongs.push(msg.krathong);
+      if (p && msg.id !== selfId && msg.av) {
+        p.avatar = msg.av;
+      }
+
+    } else if (msg.t === 'C') {
+      if (seenEvents.has(msg.eid)) return;
+      seenEvents.add(msg.eid);
+      const p = players.get(msg.id);
+      appendChat(p ? p.name : 'แฟน', msg.txt);
+      bubbles.set(msg.id, { text: msg.txt, exp: Date.now() + 5500 });
+
+    } else if (msg.t === 'E') {
+      if (seenEvents.has(msg.eid)) return;
+      seenEvents.add(msg.eid);
+      spawnEmote(msg.id, msg.em);
+
+    } else if (msg.t === 'K') {
+      if (seenEvents.has(msg.k.id)) return;
+      seenEvents.add(msg.k.id);
+      krathongs.push(msg.k);
       if (krathongs.length > 60) krathongs.shift();
-      appendChat('🪷', `${msg.krathong.owner} ลอยกระทง: "${msg.krathong.wish}"`, '#fde047');
-    } else if (msg.type === 'lantern') {
+      appendChat('🪷', `${msg.k.owner} ลอยกระทง: "${msg.k.wish}"`, '#fde047');
+
+    } else if (msg.t === 'O') {
+      if (seenEvents.has(msg.eid)) return;
+      seenEvents.add(msg.eid);
       spawnLantern(msg.x, msg.owner);
-    } else if (msg.type === 'left') {
+
+    } else if (msg.t === 'L') {
       const p = players.get(msg.id);
       if (p) appendChat('ระบบ', `${p.name} ออกจากห้องแล้ว`, '#94a3b8');
       players.delete(msg.id);
@@ -978,15 +1130,15 @@
   function spawnEmote(playerId, emoji) {
     const p = players.get(playerId);
     if (!p) return;
-    emotes.push({ x: p.renderX, y: p.renderY - 50, emoji, life: 1.0 });
+    emotes.push({ x: p.renderX, y: p.renderY - 26, emoji, life: 1.0 });
   }
 
   function spawnLantern(x, owner) {
     lanterns.push({
-      x: x + (Math.random() * 24 - 12),
-      y: 260,
-      vx: 0.25 + Math.random() * 0.25,
-      vy: -0.65 - Math.random() * 0.25,
+      x: x + (Math.random() * 14 - 7),
+      y: 132,
+      vx: 0.14 + Math.random() * 0.14,
+      vy: -0.35 - Math.random() * 0.15,
       seed: Math.random() * 5000,
       owner
     });
@@ -1002,18 +1154,16 @@
       const room = document.getElementById('inp-room').value.trim() || initialRoom;
       joinRoom(room, name, avatar);
     } else {
-      // Updating outfit inside the room!
       const me = players.get(selfId);
       if (me) {
         me.avatar = avatar;
-        sendPacket({ type: 'avatar', id: selfId, avatar });
+        sendPacket({ t: 'A', id: selfId, av: avatar });
         showToast('✨ เปลี่ยนชุดเรียบร้อยแล้ว!');
       }
       document.getElementById('modal-join').style.display = 'none';
     }
   };
 
-  // Open In-Game Wardrobe anytime
   document.getElementById('btn-wardrobe').onclick = () => {
     document.getElementById('modal-title').textContent = '👗 ห้องแต่งตัวชุดไทย';
     document.getElementById('modal-sub').textContent = 'เปลี่ยนชุด ทรงผม สีผม แล้วแฟนจะเห็นทันทีแบบ Real-time';
@@ -1053,8 +1203,10 @@
   document.getElementById('btn-lantern').onclick = () => {
     const me = players.get(selfId);
     if (!me) return;
+    const eid = selfId + '_o_' + Date.now();
+    seenEvents.add(eid);
     spawnLantern(me.x, me.name);
-    sendPacket({ type: 'lantern', x: me.x, owner: me.name });
+    sendPacket({ t: 'O', eid, x: Math.round(me.x), owner: me.name });
   };
 
   document.getElementById('chat-form').onsubmit = (e) => {
@@ -1064,17 +1216,21 @@
     if (!text || !selfId) return;
     inp.value = '';
     const me = players.get(selfId);
+    const eid = selfId + '_c_' + Date.now();
+    seenEvents.add(eid);
     appendChat(me ? me.name : 'ฉัน', text);
     bubbles.set(selfId, { text, exp: Date.now() + 5500 });
-    sendPacket({ type: 'chat', text });
+    sendPacket({ t: 'C', eid, txt: text });
   };
 
   document.querySelectorAll('.emote-btn').forEach(btn => {
     btn.onclick = () => {
       if (!selfId) return;
       const emoji = btn.dataset.emote;
+      const eid = selfId + '_e_' + Date.now();
+      seenEvents.add(eid);
       spawnEmote(selfId, emoji);
-      sendPacket({ type: 'emote', emoji });
+      sendPacket({ t: 'E', eid, em: emoji });
     };
   });
 
@@ -1098,33 +1254,32 @@
     document.getElementById('btn-hold-hands').classList.remove('active');
     clickTarget = null;
 
-    me.y = 312;
+    me.y = 156;
     me.dir = 'down';
     me.kneeling = true;
-    sendPacket({ type: 'move', x: me.x, y: me.y, dir: me.dir, moving: false, kneeling: true });
 
     const kObj = {
-      id: selfId + '_' + Date.now(),
+      id: selfId + '_k_' + Date.now(),
       owner: me.name,
       wish,
       style,
       candleColor,
-      x: me.x,
-      y: 342,
-      vx: 0.35 + Math.random() * 0.2,
-      vy: 0.14 + Math.random() * 0.08,
+      x: Math.round(me.x),
+      y: 171,
+      vx: 0.18 + Math.random() * 0.1,
+      vy: 0.08 + Math.random() * 0.04,
       seed: Math.floor(Math.random() * 6000)
     };
 
+    seenEvents.add(kObj.id);
     krathongs.push(kObj);
     if (krathongs.length > 60) krathongs.shift();
     appendChat('🪷', `${me.name} ลอยกระทง: "${wish}"`, '#fde047');
-    sendPacket({ type: 'krathong', krathong: kObj });
+    sendPacket({ t: 'K', k: kObj });
 
     setTimeout(() => {
       if (players.get(selfId)) {
         players.get(selfId).kneeling = false;
-        sendPacket({ type: 'move', x: me.x, y: me.y, dir: 'down', moving: false, kneeling: false });
       }
     }, 1500);
   };
@@ -1143,12 +1298,12 @@
 
   canvas.addEventListener('click', (e) => {
     const rect = canvas.getBoundingClientRect();
-    const cx = (e.clientX - rect.left) * (canvas.width / rect.width);
-    const cy = (e.clientY - rect.top) * (canvas.height / rect.height);
+    const cx = (e.clientX - rect.left) * (W / rect.width);
+    const cy = (e.clientY - rect.top) * (H / rect.height);
 
     for (let i = krathongs.length - 1; i >= 0; i--) {
       const k = krathongs[i];
-      if (Math.hypot(cx - k.x, cy - k.y) < 26) {
+      if (Math.hypot(cx - k.x, cy - k.y) < 16) {
         showToast(`🪷 กระทงของ <strong>${esc(k.owner)}</strong><br>"${esc(k.wish)}"`, 5000);
         return;
       }
@@ -1158,197 +1313,336 @@
       holdingHands = false;
       document.getElementById('btn-hold-hands').classList.remove('active');
     }
-    const targetX = Math.max(125, Math.min(915, cx));
-    const targetY = cy > 316 ? 314 : Math.max(150, cy);
-    clickTarget = { x: targetX, y: targetY };
+    clickTarget = clampPlayablePos(cx, cy > 158 ? 156 : cy);
   });
 
-  // ==================== PIXEL ART RENDERER ====================
-  function drawScene(t) {
-    // 1. Forest grass
-    ctx.fillStyle = '#264e27';
-    ctx.fillRect(0, 0, 960, 290);
+  // ==================== HAND-CRAFTED 16-BIT RIVERSIDE PIXEL ART ====================
+  // Pre-render the detailed static town & riverside scenery onto an offscreen 480x270 canvas
+  const bgCanvas = document.createElement('canvas');
+  bgCanvas.width = W;
+  bgCanvas.height = H;
+  const bg = bgCanvas.getContext('2d');
+  bg.imageSmoothingEnabled = false;
 
-    ctx.fillStyle = '#1d3e1e';
-    for (let gx = 130; gx < 950; gx += 48) {
-      for (let gy = 25; gy < 255; gy += 44) {
-        ctx.fillRect(gx, gy, 6, 3);
-        ctx.fillRect(gx + 3, gy - 3, 3, 3);
+  function px(c, x, y, w, h, col) {
+    c.fillStyle = col;
+    c.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+  }
+
+  function buildStaticRiversideScene() {
+    // 1. Lush emerald & moss forest meadow base
+    px(bg, 0, 0, W, 152, '#285429');
+    // Organic grass tone patches & pixel tufts
+    const grassPatches = [
+      [120, 8, 95, 42, '#214722'], [290, 4, 130, 48, '#214722'],
+      [135, 76, 80, 46, '#316332'], [340, 74, 125, 50, '#316332'],
+      [180, 95, 110, 32, '#1c3d1d'], [410, 40, 65, 40, '#1c3d1d']
+    ];
+    grassPatches.forEach(([x, y, w, h, col]) => px(bg, x, y, w, h, col));
+
+    // Pixel grass blades & wildflowers
+    for (let gx = 126; gx < 474; gx += 16) {
+      for (let gy = 10; gy < 126; gy += 18) {
+        if ((gx + gy) % 3 === 0) {
+          px(bg, gx, gy, 1, 2, '#183419');
+          px(bg, gx + 2, gy - 1, 1, 3, '#3c753d');
+        }
+        if ((gx * 7 + gy) % 19 === 0) {
+          px(bg, gx + 4, gy + 3, 2, 2, '#facc15');
+        } else if ((gx * 3 + gy) % 23 === 0) {
+          px(bg, gx + 1, gy + 5, 2, 2, '#f472b6');
+        }
       }
     }
 
-    // 2. Cliff & waterfall
-    ctx.fillStyle = '#232b32';
-    ctx.fillRect(0, 0, 250, 255);
-    ctx.fillStyle = '#36414b';
-    ctx.fillRect(130, 30, 125, 225);
-    ctx.fillStyle = '#4b5866';
-    ctx.fillRect(145, 50, 95, 185);
-    ctx.fillStyle = '#7dd3fc';
-    ctx.fillRect(172, 74, 4, 4);
-    ctx.fillRect(205, 118, 4, 4);
-
-    ctx.fillStyle = '#1e6091';
-    ctx.fillRect(0, 0, 124, 316);
-    ctx.fillStyle = '#38bdf8';
-    const wfShift = Math.floor(t / 55) % 24;
-    for (let wy = wfShift - 24; wy < 312; wy += 24) {
-      ctx.fillRect(16, wy, 18, 15);
-      ctx.fillRect(52, wy + 8, 24, 15);
-      ctx.fillRect(92, wy + 3, 16, 15);
-    }
-    ctx.fillStyle = '#e0f2fe';
-    ctx.fillRect(6, 304 + Math.sin(t / 140) * 2, 114, 9);
-
-    // 3. Sacred Stone Altar
-    ctx.fillStyle = '#5e3a20';
-    ctx.beginPath();
-    ctx.ellipse(540, 128, 145, 72, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#7c4d2b';
-    ctx.lineWidth = 4;
-    ctx.stroke();
-
-    ctx.fillStyle = '#3e2412';
-    ctx.fillRect(575, 120, 42, 4);
-    ctx.fillRect(594, 106, 4, 32);
-
-    ctx.fillStyle = '#8c7a6b';
-    ctx.fillRect(514, 52, 52, 68);
-    ctx.fillStyle = '#a89686';
-    ctx.fillRect(522, 38, 36, 22);
-    ctx.fillStyle = '#facc15';
-    ctx.fillRect(516, 68, 48, 5);
-
-    ctx.fillStyle = '#9a3412';
-    ctx.fillRect(476, 92, 24, 24);
-    ctx.fillRect(580, 92, 24, 24);
-    ctx.fillStyle = '#facc15';
-    ctx.fillRect(478, 82, 20, 10);
-    ctx.fillStyle = '#f43f5e';
-    ctx.fillRect(582, 82, 20, 10);
-
-    [[498, 106], [572, 106]].forEach(([cx, cy], idx) => {
-      ctx.fillStyle = '#fef3c7';
-      ctx.fillRect(cx, cy, 8, 14);
-      ctx.fillStyle = '#fb923c';
-      ctx.fillRect(cx + 2, cy - 5 + Math.sin(t / 90 + idx), 4, 5);
+    // 2. Left Rocky Cliff & Glowing Crystal Formations (matching image_f461e1.jpg)
+    px(bg, 0, 0, 126, 136, '#1f252b');
+    // Layered boulders with 16-bit highlight & shadow bevels
+    const boulders = [
+      [62, 0, 66, 98, '#2b333b', '#3e4954', '#181d22'],
+      [76, 18, 52, 86, '#39434d', '#505e6b', '#232930'],
+      [92, 42, 42, 74, '#475461', '#627384', '#2c343d'],
+      [112, 72, 26, 52, '#3a444e', '#52606e', '#232930']
+    ];
+    boulders.forEach(([bx, by, bw, bh, mid, hi, sh]) => {
+      px(bg, bx, by, bw, bh, mid);
+      px(bg, bx + 2, by + 2, bw - 6, 4, hi);
+      px(bg, bx + 2, by + 2, 3, bh - 6, hi);
+      px(bg, bx, by + bh - 4, bw, 4, sh);
+      px(bg, bx + bw - 3, by, 3, bh, sh);
+    });
+    // Glowing blue crystals embedded in the dark cliff
+    [[82, 32], [100, 56], [88, 78], [116, 86]].forEach(([cx, cy]) => {
+      px(bg, cx - 1, cy - 1, 5, 5, 'rgba(56, 189, 248, 0.35)');
+      px(bg, cx, cy, 3, 3, '#38bdf8');
+      px(bg, cx, cy, 1, 1, '#e0f2fe');
     });
 
-    ctx.fillStyle = '#78350f';
-    ctx.fillRect(508, 134, 64, 12);
+    // Waterfall static deep channel (animated foam drawn per frame)
+    px(bg, 0, 0, 62, 160, '#185482');
+    px(bg, 6, 0, 50, 158, '#2374ab');
 
-    // 4. Cobblestone Shoreline
-    ctx.fillStyle = '#968c7e';
-    ctx.fillRect(114, 264, 846, 50);
-    ctx.fillStyle = '#b5ab9c';
-    for (let px = 122; px < 950; px += 28) {
-      for (let py = 269; py < 307; py += 16) {
-        ctx.fillRect(px + (py % 32 === 0 ? 10 : 0), py, 19, 10);
+    // 3. Wooden Craft / Drying Rack on Left Clearing
+    px(bg, 148, 36, 2, 26, '#3b210e');
+    px(bg, 174, 36, 2, 26, '#3b210e');
+    px(bg, 146, 38, 32, 2, '#5c361a');
+    px(bg, 146, 48, 32, 2, '#5c361a');
+    // Hanging pelts/cloth & tools
+    px(bg, 152, 40, 7, 10, '#a16207');
+    px(bg, 153, 41, 5, 7, '#ca8a04');
+    px(bg, 164, 40, 6, 8, '#9a3412');
+    px(bg, 178, 44, 2, 18, '#78350f');
+
+    // 4. Sacred Stone Shrine & Ritual Plaza (Centerpiece of image_f461e1.jpg)
+    // Earthen ritual plaza oval
+    bg.fillStyle = '#5c381f';
+    bg.beginPath();
+    bg.ellipse(270, 64, 74, 36, 0, 0, Math.PI * 2);
+    bg.fill();
+    bg.strokeStyle = '#754829';
+    bg.lineWidth = 2;
+    bg.stroke();
+
+    // Inner sacred woven carpet & geometric ground symbols on right of plaza
+    px(bg, 244, 42, 52, 34, '#472a16');
+    px(bg, 246, 44, 48, 30, '#693f23');
+    // Sacred geometric cross/sun lines on earthen floor
+    px(bg, 294, 58, 22, 2, '#3b2110');
+    px(bg, 304, 50, 2, 18, '#3b2110');
+    px(bg, 298, 53, 14, 1, '#3b2110');
+    px(bg, 298, 64, 14, 1, '#3b2110');
+
+    // Giant Curved Ivory Tusks / Horns on right of shrine (iconic in image_f461e1.jpg)
+    const tusks = [
+      [318, 18], [328, 22], [337, 27], [345, 33]
+    ];
+    tusks.forEach(([tx, ty]) => {
+      px(bg, tx, ty + 14, 4, 8, '#cbd5e1');
+      px(bg, tx + 1, ty + 8, 3, 7, '#e2e8f0');
+      px(bg, tx + 2, ty + 3, 2, 6, '#f8fafc');
+      px(bg, tx + 3, ty, 2, 4, '#ffffff');
+    });
+
+    // Central Carved Stone Megalith / Shrine
+    px(bg, 256, 26, 28, 34, '#6e6054');
+    px(bg, 258, 26, 24, 32, '#8c7b6c');
+    px(bg, 261, 18, 18, 12, '#a69484');
+    px(bg, 264, 14, 12, 6, '#bfb0a1');
+    // Gold sacred garland & necklace around monolith
+    px(bg, 258, 34, 24, 3, '#eab308');
+    px(bg, 261, 36, 18, 2, '#fef08a');
+    px(bg, 265, 38, 2, 3, '#facc15');
+    px(bg, 273, 38, 2, 3, '#facc15');
+
+    // Terracotta flower urns flanking the shrine
+    [[238, 44], [290, 44]].forEach(([ux, uy], idx) => {
+      px(bg, ux, uy + 5, 12, 11, '#7c2d12');
+      px(bg, ux + 1, uy + 6, 10, 9, '#9a3412');
+      // Lush green leaves & bright lotus/tropical flowers
+      px(bg, ux - 1, uy + 1, 14, 5, '#15803d');
+      px(bg, ux + 1, uy - 2, 4, 4, idx === 0 ? '#facc15' : '#f43f5e');
+      px(bg, ux + 7, uy - 1, 4, 4, idx === 0 ? '#fb7185' : '#fde047');
+    });
+
+    // Wooden offering bench in front of shrine
+    px(bg, 254, 66, 32, 6, '#451a03');
+    px(bg, 255, 65, 30, 5, '#78350f');
+    px(bg, 257, 66, 26, 2, '#92400e');
+
+    // 5. Right Village Terrace: Stepped Candle Pillars, Totem Stand & Logs
+    [[368, 34], [380, 28], [392, 36]].forEach(([pxX, pxY]) => {
+      px(bg, pxX, pxY, 10, 24, '#7c6f64');
+      px(bg, pxX + 1, pxY, 8, 22, '#9c8e80');
+      px(bg, pxX + 3, pxY - 6, 4, 6, '#fef3c7');
+    });
+
+    // Carved Wooden Totem & Supply Stand (top-right)
+    px(bg, 412, 16, 18, 52, '#5c3419');
+    px(bg, 414, 18, 14, 48, '#854d27');
+    px(bg, 416, 22, 10, 8, '#ca8a04');
+    px(bg, 417, 34, 8, 7, '#b45309');
+    px(bg, 417, 44, 8, 7, '#b45309');
+
+    // Stacked Timber Logs on far right
+    [[444, 24], [456, 32], [448, 54]].forEach(([lx, ly]) => {
+      px(bg, lx, ly, 16, 7, '#5c3419');
+      px(bg, lx + 1, ly + 1, 14, 4, '#854d27');
+      px(bg, lx + 14, ly + 1, 3, 5, '#eab308');
+    });
+
+    // 6. Sunlit Cobblestone Promenade & Golden Sandy Shoreline
+    px(bg, 58, 130, 422, 28, '#857b6e');
+    // Hand-pixelated cobblestones
+    for (let cx = 62; cx < 476; cx += 13) {
+      for (let cy = 132; cy < 154; cy += 7) {
+        const off = (cy % 14 === 0) ? 5 : 0;
+        px(bg, cx + off, cy, 10, 5, '#635b50');
+        px(bg, cx + off + 1, cy + 1, 8, 3, '#a69b8d');
+        px(bg, cx + off + 1, cy + 1, 6, 1, '#bfb4a6');
       }
     }
-    ctx.fillStyle = '#e7d2b8';
-    ctx.fillRect(114, 311, 846, 8);
+    // Warm golden sand bank meeting the river
+    px(bg, 56, 155, 424, 5, '#cbb292');
+    px(bg, 56, 156, 424, 3, '#ebd6b9');
 
-    // 5. River Water
-    const grad = ctx.createLinearGradient(0, 319, 0, 540);
-    grad.addColorStop(0, '#1f7a74');
-    grad.addColorStop(0.28, '#135263');
-    grad.addColorStop(1, '#062029');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 319, 960, 221);
+    // 7. Crystal-Clear Turquoise River & Submerged River Stones (image_f461e1.jpg)
+    const rGrad = bg.createLinearGradient(0, 160, 0, H);
+    rGrad.addColorStop(0, '#238c84');
+    rGrad.addColorStop(0.28, '#166170');
+    rGrad.addColorStop(0.65, '#0d3e4f');
+    rGrad.addColorStop(1, '#06202b');
+    bg.fillStyle = rGrad;
+    bg.fillRect(0, 160, W, H - 160);
 
-    ctx.fillStyle = 'rgba(167, 243, 208, 0.22)';
-    const ripple = Math.sin(t / 380) * 6;
-    for (let rx = 124; rx < 945; rx += 32) {
-      ctx.fillRect(rx + ripple, 327, 18, 5);
-      ctx.fillRect(rx - ripple + 8, 344, 16, 4);
-      ctx.fillRect(rx + ripple * 0.6, 362, 14, 4);
+    // Submerged river pebbles visible through clear shallow turquoise water!
+    for (let sx = 64; sx < 474; sx += 11) {
+      for (let sy = 162; sy < 194; sy += 7) {
+        const off = (sy % 14 === 0) ? 4 : 0;
+        px(bg, sx + off, sy, 7, 4, 'rgba(13, 62, 79, 0.45)');
+        px(bg, sx + off + 1, sy + 1, 5, 2, 'rgba(94, 234, 212, 0.22)');
+      }
     }
 
-    // 6. Torches
+    // Lush fern clusters along meadow-path border
+    [[188, 72], [202, 78], [296, 86], [306, 92], [140, 118], [390, 116]].forEach(([fx, fy]) => {
+      px(bg, fx - 4, fy, 9, 3, '#14532d');
+      px(bg, fx - 2, fy - 2, 5, 4, '#22c55e');
+      px(bg, fx, fy - 3, 2, 2, '#4ade80');
+    });
+  }
+  buildStaticRiversideScene();
+
+  // Ambient village NPCs (gentle background townsfolk like image_f461e1.jpg)
+  const villageNpcs = [
+    { name: '', renderX: 98, renderY: 146, dir: 'down', moving: false, kneeling: false, avatar: { gender: 'male', skin: '#e0ac69', hairColor: '#2b1910', hairStyle: 0, outfitStyle: 'tribal', outfitColor: '#92400e', bottomColor: '#451a03' } },
+    { name: '', renderX: 162, renderY: 132, dir: 'down', moving: false, kneeling: false, avatar: { gender: 'male', skin: '#8d5524', hairColor: '#1e1b18', hairStyle: 0, outfitStyle: 'tribal', outfitColor: '#78350f', bottomColor: '#451a03' } },
+    { name: '', renderX: 356, renderY: 144, dir: 'down', moving: false, kneeling: false, avatar: { gender: 'male', skin: '#f1c27d', hairColor: '#d97706', hairStyle: 6, outfitStyle: 'boran', outfitColor: '#f8fafc', bottomColor: '#92400e' } },
+    { name: '', renderX: 444, renderY: 130, dir: 'down', moving: false, kneeling: false, avatar: { gender: 'female', skin: '#ffe5d0', hairColor: '#4a2c18', hairStyle: 8, outfitStyle: 'tribal', outfitColor: '#64748b', bottomColor: '#9a3412' } }
+  ];
+
+  // Golden fireflies floating above the river & meadow
+  const fireflies = Array.from({ length: 22 }, (_, i) => ({
+    x: 70 + (i * 19) % 400,
+    y: 40 + (i * 31) % 190,
+    phase: i * 0.7
+  }));
+
+  function drawAnimatedScene(t) {
+    // Blit pre-rendered 16-bit village & river
+    ctx.drawImage(bgCanvas, 0, 0);
+
+    // 1. Animated Left Waterfall Streams & Froth
+    const wfShift = Math.floor(t / 65) % 12;
+    for (let wy = wfShift - 12; wy < 158; wy += 12) {
+      px(ctx, 10, wy, 7, 7, '#38bdf8');
+      px(ctx, 24, wy + 4, 11, 7, '#7dd3fc');
+      px(ctx, 42, wy + 1, 8, 7, '#38bdf8');
+      px(ctx, 27, wy + 5, 4, 4, '#e0f2fe');
+    }
+    // White waterfall splash foam at base
+    const foamBob = Math.sin(t / 130) * 1.5;
+    px(ctx, 4, 155 + foamBob, 56, 5, '#bae6fd');
+    px(ctx, 8, 157 + foamBob, 48, 3, '#ffffff');
+
+    // 2. Animated Water Ripples & Shimmer
+    const rip = Math.sin(t / 380) * 3;
+    for (let rx = 64; rx < 474; rx += 18) {
+      px(ctx, rx + rip, 165, 9, 1, 'rgba(186, 230, 253, 0.35)');
+      px(ctx, rx - rip + 4, 176, 8, 1, 'rgba(153, 246, 228, 0.28)');
+      px(ctx, rx + rip * 0.5, 192, 7, 1, 'rgba(125, 211, 252, 0.18)');
+    }
+
+    // 3. Shrine & Terrace Flickering Pillar Candles
+    const candles = [
+      [249, 53], [287, 53],
+      [371, 28], [383, 22], [395, 30]
+    ];
+    candles.forEach(([cx, cy], idx) => {
+      px(ctx, cx, cy, 4, 6, '#fef3c7');
+      const fl = Math.round(Math.sin(t / 95 + idx));
+      px(ctx, cx + 1, cy - 3 + fl, 2, 3, '#fb923c');
+      px(ctx, cx + 1, cy - 2 + fl, 1, 2, '#fef08a');
+    });
+
+    // 4. Wooden Tiki Torches along Promenade & Shoreline
     const torches = [
-      [270, 214], [575, 214], [810, 214],
-      [230, 318], [625, 322]
+      [136, 108], [288, 108], [404, 108],
+      [126, 152], [312, 154]
     ];
     torches.forEach(([tx, ty], i) => {
-      ctx.fillStyle = '#451a03';
-      ctx.fillRect(tx - 3, ty, 6, 46);
-      const glow = ctx.createRadialGradient(tx, ty - 4, 2, tx, ty - 4, 38);
-      glow.addColorStop(0, 'rgba(251, 191, 36, 0.75)');
+      // Warm radial torch light pool on ground/water
+      const glow = ctx.createRadialGradient(tx, ty - 2, 1, tx, ty - 2, 22);
+      glow.addColorStop(0, 'rgba(251, 191, 36, 0.48)');
       glow.addColorStop(1, 'rgba(251, 191, 36, 0)');
       ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.arc(tx, ty - 4, 38, 0, Math.PI * 2);
+      ctx.arc(tx, ty - 2, 22, 0, Math.PI * 2);
       ctx.fill();
 
-      const fl = Math.sin(t / 85 + i) * 2;
-      ctx.fillStyle = '#f97316';
-      ctx.fillRect(tx - 4, ty - 10 + fl, 8, 10);
-      ctx.fillStyle = '#fef08a';
-      ctx.fillRect(tx - 2, ty - 7 + fl, 4, 6);
+      // Wooden post
+      px(ctx, tx - 1, ty, 3, 22, '#3b1804');
+      px(ctx, tx - 2, ty - 1, 5, 3, '#78350f');
+      // Animated flame
+      const fl = Math.round(Math.sin(t / 80 + i));
+      px(ctx, tx - 2, ty - 6 + fl, 5, 5, '#f97316');
+      px(ctx, tx - 1, ty - 5 + fl, 3, 4, '#facc15');
+      px(ctx, tx, ty - 4 + fl, 1, 2, '#ffffff');
     });
   }
 
   function drawKrathong(k, t) {
-    const bob = Math.sin((t + k.seed) / 340) * 2;
-    const x = k.x;
-    const y = k.y + bob;
+    const bob = Math.sin((t + k.seed) / 340) * 1.2;
+    const x = Math.round(k.x);
+    const y = Math.round(k.y + bob);
 
-    const aura = ctx.createRadialGradient(x, y, 2, x, y, 28);
-    aura.addColorStop(0, 'rgba(110, 231, 183, 0.58)');
-    aura.addColorStop(0.5, 'rgba(253, 224, 71, 0.25)');
-    aura.addColorStop(1, 'rgba(110, 231, 183, 0)');
+    // Emerald-gold water glow aura (matching image_f461e1.jpg)
+    const aura = ctx.createRadialGradient(x, y, 1, x, y, 15);
+    aura.addColorStop(0, 'rgba(52, 211, 153, 0.58)');
+    aura.addColorStop(0.55, 'rgba(253, 224, 71, 0.22)');
+    aura.addColorStop(1, 'rgba(52, 211, 153, 0)');
     ctx.fillStyle = aura;
     ctx.beginPath();
-    ctx.arc(x, y, 28, 0, Math.PI * 2);
+    ctx.arc(x, y, 15, 0, Math.PI * 2);
     ctx.fill();
 
     if (k.style === 'raft') {
-      ctx.fillStyle = '#854d0e';
-      ctx.fillRect(x - 13, y - 3, 26, 8);
-      ctx.fillStyle = '#ca8a04';
-      ctx.fillRect(x - 11, y - 5, 22, 4);
+      px(ctx, x - 7, y - 1, 14, 4, '#5c3419');
+      px(ctx, x - 6, y - 2, 12, 3, '#92400e');
+      px(ctx, x - 5, y - 2, 10, 1, '#ca8a04');
     } else if (k.style === 'leaf') {
-      ctx.fillStyle = '#22c55e';
-      ctx.beginPath();
-      ctx.ellipse(x, y, 13, 6, 0, 0, Math.PI * 2);
-      ctx.fill();
+      px(ctx, x - 6, y - 2, 12, 4, '#15803d');
+      px(ctx, x - 5, y - 1, 10, 2, '#22c55e');
     } else if (k.style === 'heart') {
-      ctx.fillStyle = '#fb7185';
-      ctx.beginPath();
-      ctx.arc(x - 5, y - 2, 6, 0, Math.PI * 2);
-      ctx.arc(x + 5, y - 2, 6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillRect(x - 8, y, 16, 5);
+      px(ctx, x - 5, y - 3, 4, 3, '#f43f5e');
+      px(ctx, x + 1, y - 3, 4, 3, '#f43f5e');
+      px(ctx, x - 4, y - 1, 8, 2, '#fb7185');
+      px(ctx, x - 2, y + 1, 4, 1, '#f43f5e');
     } else {
-      ctx.fillStyle = '#16a34a';
-      ctx.fillRect(x - 12, y - 2, 24, 6);
-      ctx.fillStyle = '#f472b6';
-      ctx.fillRect(x - 9, y - 6, 18, 5);
-      ctx.fillStyle = '#fbcfe8';
-      ctx.fillRect(x - 5, y - 8, 10, 3);
+      // Lotus krathong
+      px(ctx, x - 6, y - 1, 12, 3, '#15803d');
+      px(ctx, x - 5, y - 3, 10, 3, '#f472b6');
+      px(ctx, x - 3, y - 4, 6, 2, '#fbcfe8');
     }
 
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(x - 1.5, y - 12, 3, 7);
-    const fl = Math.sin(t / 75 + k.seed) * 1.5;
-    ctx.fillStyle = k.candleColor || '#fde047';
-    ctx.fillRect(x - 2.5, y - 17 + fl, 5, 5);
+    // Candle & flickering flame
+    px(ctx, x - 1, y - 7, 2, 4, '#ffffff');
+    const fl = Math.round(Math.sin(t / 75 + k.seed));
+    px(ctx, x - 1, y - 10 + fl, 2, 3, k.candleColor || '#fde047');
   }
 
-  // ==================== DETAILED THAI OUTFIT & CHARACTER RENDERER ====================
-  function drawCharacter(c, p, t, isPreview = false) {
+  // ==================== 16-BIT CHIBI CHARACTER RENDERER (image_f461c0.png STYLE) ====================
+  // Compact ~16x22 pixel grid with crisp dark-brown pixel outline (#24140e), big cute head,
+  // vertical pill eyes, side ears, and authentic Thai traditional costumes!
+  function drawChibiCharacter(c, p, t, isPreview = false) {
     const x = Math.round(p.renderX);
     const y = Math.round(p.renderY);
-    const walkBob = p.moving ? Math.abs(Math.sin(t / 105)) * 3 : 0;
-    const squat = p.kneeling ? 6 : 0;
+    const stepPhase = p.moving ? Math.sin(t / 85) : 0;
+    const walkBob = p.moving ? (Math.abs(stepPhase) > 0.5 ? 1 : 0) : 0;
+    const squat = p.kneeling ? 3 : 0;
 
     // Ground shadow
-    c.fillStyle = 'rgba(0, 0, 0, 0.38)';
-    c.beginPath();
-    c.ellipse(x, y + 2, 12, 5, 0, 0, Math.PI * 2);
-    c.fill();
+    c.fillStyle = 'rgba(0, 0, 0, 0.36)';
+    c.fillRect(x - 6, y - 1, 12, 3);
 
     const by = y - walkBob + squat;
     const av = p.avatar || {};
@@ -1356,342 +1650,292 @@
     const outfit = av.outfitStyle || 'chakkri';
     const topCol = av.outfitColor || '#f472b6';
     const botCol = av.bottomColor || '#7e22ce';
-    const skin = av.skin || '#f1c27d';
+    const skin = av.skin || '#ffdbac';
+    const hairCol = av.hairColor || '#2b1910';
+    const OL = '#24140e'; // Crisp dark pixel outline (like image_f461c0.png)
 
-    // 1. Feet / Legs (visible below Chong Kraben or ankles)
-    c.fillStyle = skin;
-    c.fillRect(x - 6, by - 6, 4, 6 - squat / 2);
-    c.fillRect(x + 2, by - 6, 4, 6 - squat / 2);
+    // 1. Legs / Shoes with 2-frame walk step
+    const leftStep = p.moving && stepPhase > 0.35 ? -1 : 0;
+    const rightStep = p.moving && stepPhase < -0.35 ? -1 : 0;
 
-    // 2. Arms (skin base)
-    c.fillStyle = skin;
-    c.fillRect(x - 11, by - 23, 3, 11);
-    c.fillRect(x + 8, by - 23, 3, 11);
+    // Outline around feet/legs
+    px(c, x - 5, by - 4 + leftStep, 4, 4, OL);
+    px(c, x + 1, by - 4 + rightStep, 4, 4, OL);
+    // Skin ankles + dark sandals/shoes
+    px(c, x - 4, by - 4 + leftStep, 2, 2, skin);
+    px(c, x + 2, by - 4 + rightStep, 2, 2, skin);
+    px(c, x - 4, by - 2 + leftStep, 2, 1, '#451a03');
+    px(c, x + 2, by - 2 + rightStep, 2, 1, '#451a03');
 
-    // 3. Outfits (Thai Traditional Costumes!)
+    // 2. Torso & Arms Outer Silhouette (14x9 outer -> 12x7 inner)
+    px(c, x - 7, by - 12, 14, 8, OL);
+    // Arms (skin default, overridden if long-sleeved outfit)
+    px(c, x - 6, by - 11, 2, 5, skin);
+    px(c, x + 4, by - 11, 2, 5, skin);
+
+    // 3. Thai Traditional Outfits (inside 8x7 inner body box: x-4..x+3, by-12..by-5)
     if (outfit === 'chakkri') {
-      // ชุดไทยจักรี: สไบเฉียงเปิดไหล่ขวา + เข็มขัดทอง + ผ้าถุงหน้านางยาว
-      c.fillStyle = skin;
-      c.fillRect(x - 8, by - 24, 16, 10); // bare upper torso/shoulder
-
-      // Sbai diagonal sash across chest
-      c.fillStyle = topCol;
-      c.fillRect(x - 8, by - 24, 6, 11);
-      c.fillRect(x - 5, by - 21, 9, 8);
-      c.fillRect(x + 2, by - 17, 6, 5);
-      // Gold Sbai trim
-      c.fillStyle = '#fde047';
-      c.fillRect(x - 2, by - 24, 2, 11);
-
+      // ชุดไทยจักรี: สไบเฉียงเปิดไหล่ + เข็มขัดทอง + ผ้าถุงหน้านาง
+      px(c, x - 4, by - 12, 8, 4, skin);
+      // Diagonal Sbai sash
+      px(c, x - 4, by - 12, 4, 4, topCol);
+      px(c, x - 2, by - 11, 5, 3, topCol);
+      px(c, x - 1, by - 12, 1, 4, '#fde047'); // Gold Sbai border
+      // Gold belt
+      px(c, x - 4, by - 8, 8, 1, '#fde047');
       // Long Pha Sin skirt
-      c.fillStyle = botCol;
-      c.fillRect(x - 8, by - 14, 16, 13 - squat / 2);
-      // Gold pleated front panel (หน้านาง)
-      c.fillStyle = '#facc15';
-      c.fillRect(x - 2, by - 14, 4, 13 - squat / 2);
-      // Gold Thai belt (เข็มขัดทอง)
-      c.fillStyle = '#fde047';
-      c.fillRect(x - 8, by - 15, 16, 2);
+      px(c, x - 5, by - 7, 10, 5, OL);
+      px(c, x - 4, by - 7, 8, 4, botCol);
+      px(c, x - 1, by - 7, 2, 4, '#facc15'); // Gold pleated front panel
 
     } else if (outfit === 'siwalai') {
-      // ชุดไทยศิวาลัย / บรมพิมาน: เสื้อแขนยาวพอดีตัว + สไบทับ + ผ้าถุงยกทอง
-      c.fillStyle = topCol;
-      c.fillRect(x - 8, by - 24, 16, 11);
-      // Long sleeves
-      c.fillRect(x - 11, by - 24, 3, 10);
-      c.fillRect(x + 8, by - 24, 3, 10);
-      // Gold collar & cuffs
-      c.fillStyle = '#fde047';
-      c.fillRect(x - 4, by - 24, 8, 2);
-      c.fillRect(x - 11, by - 16, 3, 2);
-      c.fillRect(x + 8, by - 16, 3, 2);
-
-      // Long silk skirt with gold hem
-      c.fillStyle = botCol;
-      c.fillRect(x - 8, by - 13, 16, 12 - squat / 2);
-      c.fillStyle = '#facc15';
-      c.fillRect(x - 8, by - 14, 16, 2); // belt
-      c.fillRect(x - 8, by - 4 - squat / 2, 16, 2); // gold hem
+      // ชุดไทยศิวาลัย: เสื้อแขนยาวขลิบทอง + ผ้าถุงยกทอง
+      px(c, x - 4, by - 12, 8, 4, topCol);
+      px(c, x - 6, by - 11, 2, 4, topCol); // long sleeves
+      px(c, x + 4, by - 11, 2, 4, topCol);
+      px(c, x - 2, by - 12, 4, 1, '#fde047'); // gold collar
+      px(c, x - 4, by - 8, 8, 1, '#fde047'); // gold belt
+      px(c, x - 5, by - 7, 10, 5, OL);
+      px(c, x - 4, by - 7, 8, 4, botCol);
+      px(c, x - 4, by - 4, 8, 1, '#facc15'); // gold hem
 
     } else if (outfit === 'raj_pattern') {
       // ชุดไทยราชปะแตน + โจงกระเบน
-      c.fillStyle = topCol;
-      c.fillRect(x - 8, by - 24, 16, 12);
-      // Long sleeves
-      c.fillRect(x - 11, by - 24, 3, 10);
-      c.fillRect(x + 8, by - 24, 3, 10);
-      // Standing collar & 5 gold buttons
-      c.fillStyle = '#eab308';
-      c.fillRect(x - 3, by - 25, 6, 2);
-      c.fillRect(x - 1, by - 22, 2, 2);
-      c.fillRect(x - 1, by - 19, 2, 2);
-      c.fillRect(x - 1, by - 16, 2, 2);
-
-      // Silk waist sash
-      c.fillStyle = botCol;
-      c.fillRect(x - 8, by - 13, 16, 2);
-      // Puffy Chong Kraben (โจงกระเบน)
-      c.fillRect(x - 9, by - 11, 8, 6);
-      c.fillRect(x + 1, by - 11, 8, 6);
-      c.fillRect(x - 3, by - 11, 6, 7);
+      px(c, x - 4, by - 12, 8, 5, topCol);
+      px(c, x - 6, by - 11, 2, 4, topCol); // long sleeves
+      px(c, x + 4, by - 11, 2, 4, topCol);
+      px(c, x - 1, by - 12, 2, 4, '#eab308'); // gold collar & buttons
+      // Puffy Chong Kraben
+      px(c, x - 5, by - 7, 10, 4, OL);
+      px(c, x - 4, by - 7, 8, 3, botCol);
+      px(c, x - 1, by - 5, 2, 1, OL); // leg split
 
     } else if (outfit === 'lanna') {
-      // ชุดไทยล้านนา: เสื้อปั๊ดป้ายข้าง + ผ้าซิ่นตีนจกมีลายเชิง
-      c.fillStyle = topCol;
-      c.fillRect(x - 8, by - 24, 16, 11);
-      c.fillRect(x - 11, by - 24, 3, 9);
-      c.fillRect(x + 8, by - 24, 3, 9);
-      // Diagonal Lanna lapel trim
-      c.fillStyle = '#fde047';
-      c.fillRect(x - 3, by - 24, 2, 6);
-      c.fillRect(x - 1, by - 19, 5, 2);
-
-      // Northern Pha Sin skirt with woven stripes
-      c.fillStyle = botCol;
-      c.fillRect(x - 8, by - 13, 16, 12 - squat / 2);
-      c.fillStyle = '#f43f5e';
-      c.fillRect(x - 8, by - 6 - squat / 2, 16, 2);
-      c.fillStyle = '#fde047';
-      c.fillRect(x - 8, by - 4 - squat / 2, 16, 2);
+      // ชุดไทยล้านนา: เสื้อปั๊ดป้ายข้าง + ผ้าซิ่นตีนจก
+      px(c, x - 4, by - 12, 8, 4, topCol);
+      px(c, x - 6, by - 11, 2, 4, topCol);
+      px(c, x + 4, by - 11, 2, 4, topCol);
+      px(c, x - 1, by - 12, 1, 3, '#fde047');
+      px(c, x, by - 10, 3, 1, '#fde047');
+      px(c, x - 5, by - 7, 10, 5, OL);
+      px(c, x - 4, by - 7, 8, 4, botCol);
+      px(c, x - 4, by - 5, 8, 1, '#f43f5e'); // Tin Jok woven stripe
+      px(c, x - 4, by - 4, 8, 1, '#fde047');
 
     } else if (outfit === 'boran') {
-      // ชุดไทยชาวบ้านโบราณ (หญิง: ผ้าแถบ+โจงกระเบน / ชาย: เสื้อม่อฮ่อม+ผ้าขาวม้า+โจงกระเบน)
+      // ชุดไทยโบราณ (หญิง: ผ้าแถบ+โจงกระเบน / ชาย: เสื้อม่อฮ่อม+ผ้าขาวม้า+โจงกระเบน)
       if (gender === 'female') {
-        c.fillStyle = skin;
-        c.fillRect(x - 8, by - 24, 16, 12);
-        // Chest wrap cloth (ผ้าแถบ)
-        c.fillStyle = topCol;
-        c.fillRect(x - 8, by - 21, 16, 6);
+        px(c, x - 4, by - 12, 8, 5, skin);
+        px(c, x - 4, by - 11, 8, 3, topCol); // ผ้าแถบ
       } else {
-        c.fillStyle = topCol;
-        c.fillRect(x - 8, by - 24, 16, 12);
-        c.fillRect(x - 11, by - 24, 3, 7);
-        c.fillRect(x + 8, by - 24, 3, 7);
+        px(c, x - 4, by - 12, 8, 5, topCol);
+        px(c, x - 6, by - 11, 2, 3, topCol);
+        px(c, x + 4, by - 11, 2, 3, topCol);
         // Pha Khao Ma sash (ผ้าขาวม้าพาดบ่า)
-        c.fillStyle = '#ef4444';
-        c.fillRect(x - 7, by - 24, 4, 12);
-        c.fillStyle = '#fde047';
-        c.fillRect(x - 6, by - 22, 2, 2);
-        c.fillRect(x - 6, by - 18, 2, 2);
+        px(c, x - 3, by - 12, 2, 5, '#ef4444');
+        px(c, x - 3, by - 11, 1, 1, '#fde047');
+        px(c, x - 2, by - 9, 1, 1, '#fde047');
       }
-      // Chong Kraben
-      c.fillStyle = botCol;
-      c.fillRect(x - 9, by - 12, 8, 7);
-      c.fillRect(x + 1, by - 12, 8, 7);
-      c.fillRect(x - 3, by - 12, 6, 8);
+      px(c, x - 5, by - 7, 10, 4, OL);
+      px(c, x - 4, by - 7, 8, 3, botCol);
+      px(c, x - 1, by - 5, 2, 1, OL);
 
     } else {
-      // Tribal outfit (ชุดชนเผ่าพื้นเมืองสไตล์ในรูป)
-      c.fillStyle = topCol;
-      c.fillRect(x - 8, by - 24, 16, 15);
-      // Shell/bone necklace
-      c.fillStyle = '#fef3c7';
-      c.fillRect(x - 4, by - 23, 8, 2);
-      // Fur hem
-      c.fillStyle = botCol;
-      c.fillRect(x - 8, by - 11, 16, 5);
+      // ชุดชนเผ่าพื้นเมือง
+      px(c, x - 4, by - 12, 8, 7, topCol);
+      px(c, x - 2, by - 11, 4, 1, '#fef3c7'); // bone necklace
+      px(c, x - 4, by - 6, 8, 2, botCol); // fur hem
     }
 
-    // 4. Head
-    c.fillStyle = skin;
-    c.fillRect(x - 8, by - 38, 16, 14);
+    // 4. Chunky Chibi Head (14x12 outer -> 12x10 inner, matching image_f461c0.png!)
+    px(c, x - 7, by - 23, 14, 11, OL);
+    px(c, x - 6, by - 24, 12, 1, OL);
+    // Cute side pixel ears (just like image_f461c0.png!)
+    px(c, x - 8, by - 18, 1, 3, OL);
+    px(c, x + 7, by - 18, 1, 3, OL);
+    px(c, x - 7, by - 18, 1, 2, skin);
+    px(c, x + 6, by - 18, 1, 2, skin);
 
-    // 5. Face Features (Gender-aware eyes, brows, blush)
+    // Face fill
+    px(c, x - 6, by - 22, 12, 9, skin);
+
+    // 5. Eyes & Expression (Vertical pill eyes like image_f461c0.png)
     if (p.dir !== 'up') {
-      const eo = p.dir === 'left' ? -2 : p.dir === 'right' ? 2 : 0;
+      const eo = p.dir === 'left' ? -1 : p.dir === 'right' ? 1 : 0;
+      px(c, x - 4 + eo, by - 18, 2, 3, OL);
+      px(c, x + 2 + eo, by - 18, 2, 3, OL);
 
-      // Eyebrows
-      c.fillStyle = av.hairColor || '#1c1410';
-      if (gender === 'male') {
-        c.fillRect(x - 5 + eo, by - 33, 4, 1);
-        c.fillRect(x + 1 + eo, by - 33, 4, 1);
-      } else {
-        c.fillRect(x - 4 + eo, by - 33, 3, 1);
-        c.fillRect(x + 1 + eo, by - 33, 3, 1);
-      }
-
-      // Eyes
-      c.fillStyle = '#1e293b';
-      c.fillRect(x - 4 + eo, by - 31, 2, 3);
-      c.fillRect(x + 2 + eo, by - 31, 2, 3);
-
-      // Female eyelashes & rosy blush
       if (gender === 'female') {
-        c.fillRect(x - 5 + eo, by - 31, 1, 1);
-        c.fillRect(x + 4 + eo, by - 31, 1, 1);
-        c.fillStyle = 'rgba(244, 63, 94, 0.42)';
-        c.fillRect(x - 6 + eo, by - 28, 2, 2);
-        c.fillRect(x + 4 + eo, by - 28, 2, 2);
+        // Rosy cheeks
+        px(c, x - 5 + eo, by - 15, 2, 1, 'rgba(244, 63, 94, 0.5)');
+        px(c, x + 3 + eo, by - 15, 2, 1, 'rgba(244, 63, 94, 0.5)');
       }
     }
 
-    // 6. Hairstyles & Headpieces (9 styles!)
+    // 6. Hairstyles & Headpieces (with crisp dark outline!)
     const hs = Number(av.hairStyle || 0);
-    c.fillStyle = av.hairColor || '#1c1410';
-
     if (hs === 8) {
-      // หมวกหมาป่าชนเผ่า (Tribal wolf hood)
-      c.fillStyle = '#94a3b8';
-      c.fillRect(x - 10, by - 43, 20, 8);
-      c.fillRect(x - 10, by - 47, 4, 4);
-      c.fillRect(x + 6, by - 47, 4, 4);
-      c.fillStyle = '#cbd5e1';
-      c.fillRect(x - 10, by - 35, 3, 11);
-      c.fillRect(x + 7, by - 35, 3, 11);
+      // Wolf hood
+      px(c, x - 7, by - 25, 14, 5, OL);
+      px(c, x - 7, by - 27, 3, 2, OL);
+      px(c, x + 4, by - 27, 3, 2, OL);
+      px(c, x - 6, by - 24, 12, 3, '#94a3b8');
+      px(c, x - 6, by - 26, 2, 2, '#cbd5e1');
+      px(c, x + 4, by - 26, 2, 2, '#cbd5e1');
+      px(c, x - 7, by - 21, 2, 7, '#64748b');
+      px(c, x + 5, by - 21, 2, 7, '#64748b');
     } else {
-      // Base hair cap
-      c.fillRect(x - 9, by - 41, 18, 6);
+      // Top hair crown + bangs (matching image_f461c0.png)
+      px(c, x - 6, by - 23, 12, 3, hairCol);
+      px(c, x - 5, by - 20, 2, 1, hairCol);
+      px(c, x, by - 20, 2, 1, hairCol);
+      px(c, x + 4, by - 20, 2, 1, hairCol);
+
       if (p.dir === 'up') {
-        c.fillRect(x - 9, by - 36, 18, 10);
+        px(c, x - 6, by - 22, 12, 8, hairCol);
       }
 
       if (hs === 0) {
-        // ผมสั้นซอยเท่
-        c.fillRect(x - 9, by - 36, 2, 5);
-        c.fillRect(x + 7, by - 36, 2, 5);
+        // Short neat sideburns
+        px(c, x - 6, by - 20, 1, 3, hairCol);
+        px(c, x + 5, by - 20, 1, 3, hairCol);
       } else if (hs === 1) {
-        // ผมยาวตรงสลวย
-        c.fillRect(x - 10, by - 36, 3, 18);
-        c.fillRect(x + 7, by - 36, 3, 18);
+        // Long straight hair (like bottom-left girl in image_f461c0.png)
+        px(c, x - 8, by - 20, 3, 11, OL);
+        px(c, x + 5, by - 20, 3, 11, OL);
+        px(c, x - 7, by - 20, 2, 10, hairCol);
+        px(c, x + 5, by - 20, 2, 10, hairCol);
       } else if (hs === 2) {
-        // ผมประบ่าปลายงุ้ม
-        c.fillRect(x - 10, by - 36, 3, 11);
-        c.fillRect(x + 7, by - 36, 3, 11);
+        // Shoulder-length bob
+        px(c, x - 8, by - 20, 3, 7, OL);
+        px(c, x + 5, by - 20, 3, 7, OL);
+        px(c, x - 7, by - 20, 2, 6, hairCol);
+        px(c, x + 5, by - 20, 2, 6, hairCol);
       } else if (hs === 3) {
-        // ผมเกล้ามวยไทย + ปิ่นทอง
-        c.fillRect(x - 4, by - 46, 8, 5);
-        c.fillStyle = '#fde047';
-        c.fillRect(x - 5, by - 42, 10, 2); // gold coronet band
-        c.fillRect(x + 4, by - 46, 4, 2);  // gold hairpin
+        // Thai Chignon Bun + Gold Hairpin (เกล้ามวยไทย + ปิ่นทอง)
+        px(c, x - 4, by - 27, 8, 4, OL);
+        px(c, x - 3, by - 26, 6, 3, hairCol);
+        px(c, x - 4, by - 24, 8, 1, '#fde047'); // Gold tiara band
+        px(c, x + 3, by - 27, 3, 1, '#fde047'); // Gold hairpin
       } else if (hs === 4) {
-        // ผมมัดหางม้าสูง
-        c.fillRect(x - 3, by - 45, 6, 4);
-        c.fillRect(x + 3, by - 44, 5, 11);
+        // Cute Pigtails (like top-right blonde girl in image_f461c0.png!)
+        px(c, x - 10, by - 21, 3, 5, OL);
+        px(c, x + 7, by - 21, 3, 5, OL);
+        px(c, x - 9, by - 20, 2, 3, hairCol);
+        px(c, x + 7, by - 20, 2, 3, hairCol);
       } else if (hs === 5) {
-        // ผมเปียสองข้างน่ารัก
-        c.fillRect(x - 11, by - 35, 3, 15);
-        c.fillRect(x + 8, by - 35, 3, 15);
-        c.fillStyle = '#f43f5e';
-        c.fillRect(x - 11, by - 23, 3, 2);
-        c.fillRect(x + 8, by - 23, 3, 2);
+        // Twin braids with ribbons
+        px(c, x - 8, by - 19, 3, 9, OL);
+        px(c, x + 5, by - 19, 3, 9, OL);
+        px(c, x - 7, by - 19, 2, 8, hairCol);
+        px(c, x + 5, by - 19, 2, 8, hairCol);
+        px(c, x - 7, by - 13, 2, 1, '#f43f5e');
+        px(c, x + 5, by - 13, 2, 1, '#f43f5e');
       } else if (hs === 6) {
-        // ผมแสกกลางสไตล์เกาหลี
-        c.fillRect(x - 10, by - 37, 3, 9);
-        c.fillRect(x + 7, by - 37, 3, 9);
-        c.fillStyle = skin;
-        c.fillRect(x - 1, by - 37, 2, 2); // center part gap
+        // Center-part Korean style
+        px(c, x - 7, by - 20, 2, 5, hairCol);
+        px(c, x + 5, by - 20, 2, 5, hairCol);
+        px(c, x - 1, by - 21, 2, 1, skin);
       } else if (hs === 7) {
-        // มงกุฎดอกไม้ + ผมประบ่า
-        c.fillRect(x - 10, by - 36, 3, 12);
-        c.fillRect(x + 7, by - 36, 3, 12);
-        c.fillStyle = '#f43f5e';
-        c.fillRect(x - 8, by - 42, 4, 3);
-        c.fillStyle = '#facc15';
-        c.fillRect(x - 2, by - 42, 4, 3);
-        c.fillStyle = '#38bdf8';
-        c.fillRect(x + 4, by - 42, 4, 3);
+        // Flower crown + bob
+        px(c, x - 7, by - 20, 2, 6, hairCol);
+        px(c, x + 5, by - 20, 2, 6, hairCol);
+        px(c, x - 5, by - 24, 2, 2, '#f43f5e');
+        px(c, x - 1, by - 24, 2, 2, '#facc15');
+        px(c, x + 3, by - 24, 2, 2, '#38bdf8');
       }
     }
 
     if (isPreview) return;
 
-    // 7. Roblox-style Nameplate
-    c.font = 'bold 11px Prompt, sans-serif';
+    // 7. Crisp Nameplate
+    c.font = 'bold 7px Prompt, sans-serif';
     c.textAlign = 'center';
-    const nw = c.measureText(p.name).width + 10;
-    c.fillStyle = 'rgba(13, 21, 32, 0.78)';
-    c.fillRect(x - nw / 2, by - 60, nw, 15);
+    const nw = Math.ceil(c.measureText(p.name).width) + 6;
+    c.fillStyle = 'rgba(11, 19, 30, 0.82)';
+    c.fillRect(x - Math.floor(nw / 2), by - 35, nw, 9);
     c.fillStyle = p.id === selfId ? '#fde047' : '#ffffff';
-    c.fillText(p.name, x, by - 49);
+    c.fillText(p.name, x, by - 28);
 
-    // 8. Roblox-style Overhead Chat Bubble
+    // 8. Overhead Chat Bubble
     const b = bubbles.get(p.id);
     if (b && b.exp > Date.now()) {
-      c.font = '12px Prompt, sans-serif';
-      const bw = Math.min(210, c.measureText(b.text).width + 18);
-      const bx = x - bw / 2;
-      const byBubble = by - 86;
+      c.font = '7px Prompt, sans-serif';
+      const bw = Math.min(120, Math.ceil(c.measureText(b.text).width) + 10);
+      const bx = x - Math.floor(bw / 2);
+      const byBubble = by - 49;
       c.fillStyle = '#ffffff';
-      c.beginPath();
-      c.roundRect(bx, byBubble, bw, 22, 8);
-      c.fill();
+      c.fillRect(bx, byBubble, bw, 12);
+      c.strokeStyle = '#24140e';
+      c.lineWidth = 1;
+      c.strokeRect(bx, byBubble, bw, 12);
       c.fillStyle = '#0f172a';
-      c.fillText(b.text, x, byBubble + 15, 196);
+      c.fillText(b.text, x, byBubble + 8, 112);
     }
   }
 
   function drawLantern(l, t) {
-    const sway = Math.sin((t + l.seed) / 400) * 4;
-    const x = l.x + sway;
-    const y = l.y;
+    const sway = Math.sin((t + l.seed) / 400) * 2.5;
+    const x = Math.round(l.x + sway);
+    const y = Math.round(l.y);
 
-    const glow = ctx.createRadialGradient(x, y, 2, x, y, 24);
+    const glow = ctx.createRadialGradient(x, y, 1, x, y, 14);
     glow.addColorStop(0, 'rgba(251, 146, 60, 0.75)');
     glow.addColorStop(1, 'rgba(251, 146, 60, 0)');
     ctx.fillStyle = glow;
     ctx.beginPath();
-    ctx.arc(x, y, 24, 0, Math.PI * 2);
+    ctx.arc(x, y, 14, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#fb923c';
-    ctx.fillRect(x - 6, y - 9, 12, 16);
-    ctx.fillStyle = '#fef08a';
-    ctx.fillRect(x - 3, y - 5, 6, 9);
+    px(ctx, x - 3, y - 5, 6, 8, '#ea580c');
+    px(ctx, x - 2, y - 4, 4, 6, '#fb923c');
+    px(ctx, x - 1, y - 2, 2, 4, '#fef08a');
   }
 
-  // ==================== MAIN LOOP ====================
+  // ==================== FIXED-TIMESTEP SIMULATION & RENDER LOOP ====================
   let prevTime = performance.now();
+  let netAcc = 0;
+
   function frame(now) {
     const dt = Math.min(0.05, (now - prevTime) / 1000);
     prevTime = now;
 
+    // 1. Local Player Input & Client-Side Prediction
     const me = players.get(selfId);
-    if (me && !me.kneeling) {
-      let vx = 0, vy = 0;
+    let stepVx = 0, stepVy = 0;
 
+    if (me && !me.kneeling) {
       if (holdingHands && players.size > 1) {
         let partner = null;
         for (const [id, pl] of players.entries()) {
           if (id !== selfId) { partner = pl; break; }
         }
         if (partner) {
-          const destX = Math.max(125, Math.min(915, partner.x + 24));
-          const destY = partner.y;
-          const d = Math.hypot(destX - me.x, destY - me.y);
-          if (d > 4) {
-            vx = (destX - me.x) / d;
-            vy = (destY - me.y) / d;
-            me.x += vx * 145 * dt;
-            me.y += vy * 145 * dt;
-            me.moving = true;
-            me.dir = Math.abs(vx) > Math.abs(vy) ? (vx > 0 ? 'right' : 'left') : (vy > 0 ? 'down' : 'up');
+          const dest = clampPlayablePos(partner.renderX + 14, partner.renderY);
+          const d = Math.hypot(dest.x - me.x, dest.y - me.y);
+          if (d > 2) {
+            stepVx = (dest.x - me.x) / d;
+            stepVy = (dest.y - me.y) / d;
+            stepMovement(me, stepVx, stepVy, dt);
           } else {
             me.moving = false;
             me.dir = partner.dir;
           }
         }
       } else {
-        if (keys['w'] || keys['arrowup']) vy -= 1;
-        if (keys['s'] || keys['arrowdown']) vy += 1;
-        if (keys['a'] || keys['arrowleft']) vx -= 1;
-        if (keys['d'] || keys['arrowright']) vx += 1;
+        if (keys['w'] || keys['arrowup']) stepVy -= 1;
+        if (keys['s'] || keys['arrowdown']) stepVy += 1;
+        if (keys['a'] || keys['arrowleft']) stepVx -= 1;
+        if (keys['d'] || keys['arrowright']) stepVx += 1;
 
-        if (vx !== 0 || vy !== 0) {
-          const len = Math.hypot(vx, vy);
-          vx /= len; vy /= len;
-          me.x = Math.max(125, Math.min(915, me.x + vx * 140 * dt));
-          me.y = Math.max(150, Math.min(314, me.y + vy * 140 * dt));
-          me.moving = true;
-          me.dir = Math.abs(vx) > Math.abs(vy) ? (vx > 0 ? 'right' : 'left') : (vy > 0 ? 'down' : 'up');
+        if (stepVx !== 0 || stepVy !== 0) {
+          stepMovement(me, stepVx, stepVy, dt);
         } else if (clickTarget) {
           const d = Math.hypot(clickTarget.x - me.x, clickTarget.y - me.y);
-          if (d > 4) {
-            const dx = (clickTarget.x - me.x) / d;
-            const dy = (clickTarget.y - me.y) / d;
-            me.x += dx * 140 * dt;
-            me.y += dy * 140 * dt;
-            me.moving = true;
-            me.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
+          if (d > 2) {
+            stepVx = (clickTarget.x - me.x) / d;
+            stepVy = (clickTarget.y - me.y) / d;
+            stepMovement(me, stepVx, stepVy, dt);
           } else {
             clickTarget = null;
             me.moving = false;
@@ -1701,79 +1945,153 @@
         }
       }
 
-      if (now - lastNetSync > 50) {
-        lastNetSync = now;
-        sendPacket({
-          type: 'move',
-          x: me.x,
-          y: me.y,
-          dir: me.dir,
-          moving: me.moving,
-          kneeling: me.kneeling
-        });
+      if (!isHost && (stepVx !== 0 || stepVy !== 0)) {
+        inputSeq++;
+        pendingInputs.push({ seq: inputSeq, vx: stepVx, vy: stepVy, dt });
+        if (pendingInputs.length > 60) pendingInputs.shift();
       }
     }
 
-    if (isHost && now - lastHeartbeat > 1200) {
-      lastHeartbeat = now;
-      hostBroadcast({
-        type: 'sync',
-        players: Array.from(players.values())
-      });
+    // Smoothly decay positional reconciliation offset (prevents rubber-banding)
+    reconcileErrX *= Math.pow(0.05, dt);
+    reconcileErrY *= Math.pow(0.05, dt);
+    if (me) {
+      me.renderX = me.x + reconcileErrX;
+      me.renderY = me.y + reconcileErrY;
     }
 
+    // 2. Fixed 20Hz Network Tick (Bandwidth-Budgeted & Quantized)
+    netAcc += dt;
+    if (netAcc >= TICK_DT) {
+      netAcc %= TICK_DT;
+
+      if (me) {
+        const qx = Math.round(me.x);
+        const qy = Math.round(me.y);
+        const qf = packFlags(me.dir, me.moving, me.kneeling);
+
+        if (!isHost) {
+          // Only transmit movement packet when state changed (delta compression)
+          if (qx !== me.lastSentX || qy !== me.lastSentY || qf !== me.lastSentFlags) {
+            me.lastSentX = qx; me.lastSentY = qy; me.lastSentFlags = qf;
+            sendPacket({ t: 'U', s: inputSeq, x: qx, y: qy, f: qf });
+          }
+          if (now - lastPingSent > 2000) {
+            lastPingSent = now;
+            sendPacket({ t: 'P', ts: now });
+          }
+        } else if (guestConns.size > 0) {
+          // Host broadcasts authoritative snapshot batch to all connected guests
+          const ps = [];
+          players.forEach(pl => {
+            ps.push({
+              id: pl.id,
+              x: Math.round(pl.x),
+              y: Math.round(pl.y),
+              f: packFlags(pl.dir, pl.moving, pl.kneeling),
+              ack: pl.lastAckSeq || 0
+            });
+          });
+          hostBroadcast({ t: 'S', ps });
+        }
+      }
+    }
+
+    // 3. Snapshot Interpolation for Remote Players (Smooth across jitter/packet loss)
+    const renderTime = now - INTERP_DELAY_MS;
     players.forEach(p => {
-      p.renderX += (p.x - p.renderX) * 0.25;
-      p.renderY += (p.y - p.renderY) * 0.25;
+      if (p.id === selfId) return;
+      const snaps = p.snapshots;
+      if (snaps && snaps.length >= 2) {
+        while (snaps.length > 2 && snaps[1].t <= renderTime) {
+          snaps.shift();
+        }
+        const s0 = snaps[0];
+        const s1 = snaps[1];
+        if (s1.t > s0.t) {
+          const alpha = Math.max(0, Math.min(1.25, (renderTime - s0.t) / (s1.t - s0.t)));
+          p.renderX = s0.x + (s1.x - s0.x) * alpha;
+          p.renderY = s0.y + (s1.y - s0.y) * alpha;
+        } else {
+          p.renderX += (p.x - p.renderX) * 0.28;
+          p.renderY += (p.y - p.renderY) * 0.28;
+        }
+      } else {
+        p.renderX += (p.x - p.renderX) * 0.28;
+        p.renderY += (p.y - p.renderY) * 0.28;
+      }
     });
 
+    // 4. Drift Krathongs & Lanterns
     for (let i = krathongs.length - 1; i >= 0; i--) {
       const k = krathongs[i];
-      k.x += k.vx * 18 * dt;
-      k.y += k.vy * 10 * dt;
-      if (k.x > 1020 || k.y > 600) {
-        krathongs.splice(i, 1);
-      }
+      k.x += k.vx * 11 * dt;
+      k.y += k.vy * 6 * dt;
+      if (k.x > W + 30 || k.y > H + 30) krathongs.splice(i, 1);
     }
 
     for (let i = lanterns.length - 1; i >= 0; i--) {
       const l = lanterns[i];
-      l.x += l.vx * 20 * dt;
-      l.y += l.vy * 28 * dt;
-      if (l.y < -40) lanterns.splice(i, 1);
+      l.x += l.vx * 12 * dt;
+      l.y += l.vy * 16 * dt;
+      if (l.y < -25) lanterns.splice(i, 1);
     }
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawScene(now);
+    // 5. Render Frame
+    ctx.clearRect(0, 0, W, H);
+    drawAnimatedScene(now);
 
     if (clickTarget) {
-      ctx.strokeStyle = 'rgba(253, 224, 71, 0.75)';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(253, 224, 71, 0.85)';
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.ellipse(clickTarget.x, clickTarget.y, 8 + Math.sin(now / 150) * 2, 4, 0, 0, Math.PI * 2);
+      ctx.ellipse(clickTarget.x, clickTarget.y, 4 + Math.sin(now / 150), 2, 0, 0, Math.PI * 2);
       ctx.stroke();
     }
 
     krathongs.forEach(k => drawKrathong(k, now));
 
-    const sorted = Array.from(players.values()).sort((a, b) => a.renderY - b.renderY);
-    sorted.forEach(p => drawCharacter(ctx, p, now));
+    // Depth-sort all characters (players + ambient villagers) by Y coordinate
+    const allChars = [
+      ...villageNpcs.map(n => ({ ...n, isNpc: true })),
+      ...Array.from(players.values())
+    ].sort((a, b) => a.renderY - b.renderY);
 
-    if (holdingHands && sorted.length >= 2) {
-      const p1 = sorted[0];
-      const p2 = sorted[1];
-      if (Math.hypot(p1.renderX - p2.renderX, p1.renderY - p2.renderY) < 42) {
-        ctx.font = '14px sans-serif';
+    allChars.forEach(ch => {
+      if (ch.isNpc) {
+        drawChibiCharacter(ctx, ch, now, true);
+      } else {
+        drawChibiCharacter(ctx, ch, now, false);
+      }
+    });
+
+    // Floating heart when holding hands close to partner
+    const realSorted = Array.from(players.values()).sort((a, b) => a.renderY - b.renderY);
+    if (holdingHands && realSorted.length >= 2) {
+      const p1 = realSorted[0];
+      const p2 = realSorted[1];
+      if (Math.hypot(p1.renderX - p2.renderX, p1.renderY - p2.renderY) < 26) {
+        ctx.font = '8px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('💕', (p1.renderX + p2.renderX) / 2, Math.min(p1.renderY, p2.renderY) - 24 + Math.sin(now / 200) * 2);
+        ctx.fillText('💕', (p1.renderX + p2.renderX) / 2, Math.min(p1.renderY, p2.renderY) - 14 + Math.sin(now / 200));
       }
     }
 
     lanterns.forEach(l => drawLantern(l, now));
 
+    // Fireflies
+    fireflies.forEach((f, idx) => {
+      const fx = Math.round(f.x + Math.sin(now / 900 + f.phase) * 6);
+      const fy = Math.round(f.y + Math.cos(now / 700 + idx) * 4);
+      const pulse = 0.45 + 0.55 * Math.sin(now / 320 + f.phase);
+      ctx.fillStyle = `rgba(254, 240, 138, ${pulse.toFixed(2)})`;
+      ctx.fillRect(fx, fy, 1, 1);
+    });
+
+    // Floating Emotes
     for (let i = emotes.length - 1; i >= 0; i--) {
       const em = emotes[i];
-      em.y -= 36 * dt;
+      em.y -= 18 * dt;
       em.life -= 0.75 * dt;
       if (em.life <= 0) {
         emotes.splice(i, 1);
@@ -1781,7 +2099,7 @@
       }
       ctx.save();
       ctx.globalAlpha = Math.max(0, em.life);
-      ctx.font = '22px sans-serif';
+      ctx.font = '12px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(em.emoji, em.x, em.y);
       ctx.restore();
