@@ -33,7 +33,7 @@
       justify-content: center;
       background: #061018;
     }
-    canvas {
+    canvas#world {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -58,21 +58,22 @@
     }
     .pill {
       pointer-events: auto;
-      background: rgba(13, 21, 32, 0.84);
+      background: rgba(13, 21, 32, 0.85);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 14px;
-      padding: 7px 12px;
+      padding: 7px 11px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      flex-wrap: wrap;
+      gap: 7px;
       font-size: 13px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
     }
     .btn {
       border: none;
       border-radius: 10px;
-      padding: 7px 13px;
+      padding: 7px 12px;
       font-size: 13px;
       font-weight: 600;
       color: #fff;
@@ -87,8 +88,8 @@
     .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     .btn-primary { background: linear-gradient(135deg, #10b981, #059669); }
     .btn-warm { background: linear-gradient(135deg, #f59e0b, #ea580c); }
-    .btn-pink { background: linear-gradient(135deg, #ec4899, #db2777); }
-    .btn-ghost { background: rgba(255, 255, 255, 0.12); }
+    .btn-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+    .btn-ghost { background: rgba(255, 255, 255, 0.13); }
     .btn-ghost.active {
       background: linear-gradient(135deg, #ec4899, #f43f5e);
       box-shadow: 0 0 12px rgba(236, 72, 153, 0.55);
@@ -97,10 +98,10 @@
     /* Toast */
     #toast {
       position: absolute;
-      top: 66px;
+      top: 68px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(13, 21, 32, 0.94);
+      background: rgba(13, 21, 32, 0.95);
       border: 1px solid #fbbf24;
       color: #fef3c7;
       padding: 9px 18px;
@@ -130,7 +131,7 @@
       pointer-events: auto;
       width: 330px;
       max-width: 62vw;
-      background: rgba(13, 21, 32, 0.84);
+      background: rgba(13, 21, 32, 0.85);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 14px;
@@ -181,7 +182,7 @@
     .emote-bar {
       display: flex;
       gap: 4px;
-      background: rgba(13, 21, 32, 0.84);
+      background: rgba(13, 21, 32, 0.85);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 13px;
@@ -202,25 +203,27 @@
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(5, 11, 18, 0.86);
+      background: rgba(5, 11, 18, 0.88);
       backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 50;
-      padding: 16px;
+      padding: 14px;
     }
     .card {
       background: #131f2e;
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 20px;
-      padding: 22px;
-      width: 410px;
+      padding: 20px;
+      width: 450px;
       max-width: 100%;
-      max-height: 92vh;
+      max-height: 93vh;
       overflow-y: auto;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
     }
+    .card::-webkit-scrollbar { width: 5px; }
+    .card::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
     .card h2 {
       font-size: 20px;
       color: #fbbf24;
@@ -229,55 +232,139 @@
     .card p.sub {
       font-size: 13px;
       color: #94a3b8;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
-    .form-group { margin-bottom: 12px; }
+    .form-group { margin-bottom: 11px; }
     .form-group label {
       display: block;
       font-size: 12px;
       color: #cbd5e1;
       margin-bottom: 5px;
+      font-weight: 500;
     }
-    .form-group input, .form-group select {
+    .form-group input[type="text"], .form-group select {
       width: 100%;
       background: #0b131d;
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 10px;
-      padding: 9px 12px;
+      padding: 8px 12px;
       color: #fff;
-      font-size: 14px;
+      font-size: 13px;
       outline: none;
       user-select: text;
     }
-    .form-group input:focus, .form-group select:focus { border-color: #10b981; }
+    .form-group input[type="text"]:focus, .form-group select:focus { border-color: #10b981; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 420px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    /* Gender Toggle */
+    .gender-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .gender-btn {
+      background: #0b131d;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 10px;
+      padding: 8px;
+      color: #cbd5e1;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .gender-btn.active[data-gender="female"] {
+      background: rgba(236, 72, 153, 0.22);
+      border-color: #ec4899;
+      color: #fbcfe8;
+    }
+    .gender-btn.active[data-gender="male"] {
+      background: rgba(59, 130, 246, 0.22);
+      border-color: #3b82f6;
+      color: #bfdbfe;
+    }
+
+    /* Swatches + Color Picker */
     .swatches {
       display: flex;
-      gap: 8px;
+      gap: 7px;
       flex-wrap: wrap;
+      align-items: center;
     }
     .swatch {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       cursor: pointer;
-      border: 2px solid rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.18);
       transition: transform 0.12s, border-color 0.12s;
+      flex-shrink: 0;
     }
     .swatch.active {
       border-color: #fff;
-      transform: scale(1.15);
-      box-shadow: 0 0 10px rgba(255,255,255,0.5);
+      transform: scale(1.16);
+      box-shadow: 0 0 10px rgba(255,255,255,0.55);
     }
-    .preview-box {
+    .color-picker-wrap {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px dashed rgba(255,255,255,0.45);
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #0b131d;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 10px;
-      margin-bottom: 14px;
+      font-size: 12px;
+      background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
     }
+    .color-picker-wrap input[type="color"] {
+      position: absolute;
+      inset: -6px;
+      width: 40px;
+      height: 40px;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    /* Avatar Preview Box */
+    .preview-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #1b3147 0%, #0b131d 100%);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 14px;
+      padding: 8px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .preview-controls {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .mini-btn {
+      background: rgba(255,255,255,0.12);
+      border: none;
+      color: #e2e8f0;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .mini-btn:hover { background: rgba(255,255,255,0.22); }
   </style>
 </head>
 <body>
@@ -295,8 +382,9 @@
     </div>
 
     <div class="pill">
+      <button class="btn btn-purple" id="btn-wardrobe">👗 แต่งตัว</button>
       <button class="btn btn-ghost" id="btn-hold-hands" title="เดินตามและจับมือกับแฟนอัตโนมัติ">🤝 จับมือแฟน</button>
-      <button class="btn btn-warm" id="btn-lantern">🏮 ปล่อยโคมลอย</button>
+      <button class="btn btn-warm" id="btn-lantern">🏮 โคมลอย</button>
       <button class="btn btn-primary" id="btn-krathong">🪷 ลอยกระทง</button>
     </div>
   </div>
@@ -327,35 +415,66 @@
   </div>
 </div>
 
-<!-- Join / Customize Modal -->
+<!-- Join / Wardrobe Customization Modal -->
 <div class="overlay" id="modal-join">
   <div class="card">
-    <h2>🏮 ลอยกระทงด้วยกัน (Real-time)</h2>
-    <p class="sub">แต่งตัวละครและตั้งรหัสห้องเดียวกันเพื่อเจอกันริมน้ำตก</p>
+    <h2 id="modal-title">🏮 แต่งตัว & เข้าสู่ริมแม่น้ำ</h2>
+    <p class="sub" id="modal-sub">เลือกเพศ ทรงผม สีผม และชุดไทยได้ตามใจชอบ</p>
 
     <div class="preview-box">
-      <canvas id="avatar-preview" width="84" height="84" style="width:84px;height:84px;"></canvas>
+      <canvas id="avatar-preview" width="110" height="110" style="width:110px;height:110px;image-rendering:pixelated;"></canvas>
+      <div class="preview-controls">
+        <button type="button" class="mini-btn" id="btn-rot-left">↺ หมุนซ้าย</button>
+        <button type="button" class="mini-btn" id="btn-rot-right">หมุนขวา ↻</button>
+      </div>
+    </div>
+
+    <div class="grid-2" id="room-name-row">
+      <div class="form-group">
+        <label>ชื่อบนหัวตัวละคร</label>
+        <input type="text" id="inp-name" placeholder="เช่น น้องบีม, พี่ภัทร..." maxlength="16" />
+      </div>
+      <div class="form-group">
+        <label>รหัสห้อง (ใช้รหัสเดียวกับแฟน)</label>
+        <input type="text" id="inp-room" placeholder="เช่น LOVE2026" maxlength="12" />
+      </div>
     </div>
 
     <div class="form-group">
-      <label>ชื่อบนหัวตัวละคร (สไตล์ Roblox)</label>
-      <input type="text" id="inp-name" placeholder="เช่น น้องบีม, พี่ภัทร..." maxlength="16" />
+      <label>เลือกเพศตัวละคร</label>
+      <div class="gender-row">
+        <div class="gender-btn active" data-gender="female">👩 ผู้หญิง</div>
+        <div class="gender-btn" data-gender="male">👨 ผู้ชาย</div>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label>รหัสห้อง (ใช้รหัสเดียวกันทั้ง 2 เครื่อง)</label>
-      <input type="text" id="inp-room" placeholder="เช่น LOVE2026" maxlength="12" />
-    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>เลือกทรงผม & เครื่องหัว</label>
+        <select id="inp-hair-style">
+          <option value="0">ผมสั้นซอยเท่</option>
+          <option value="1" selected>ผมยาวตรงสลวย</option>
+          <option value="2">ผมประบ่าปลายงุ้ม</option>
+          <option value="3">ผมเกล้ามวยไทย + ปิ่นทอง</option>
+          <option value="4">ผมมัดหางม้าสูง</option>
+          <option value="5">ผมเปียสองข้างน่ารัก</option>
+          <option value="6">ผมแสกกลางสไตล์เกาหลี</option>
+          <option value="7">มงกุฎดอกไม้</option>
+          <option value="8">หมวกหมาป่าชนเผ่า (เหมือนในรูป)</option>
+        </select>
+      </div>
 
-    <div class="form-group">
-      <label>ทรงผม & เครื่องประดับ</label>
-      <select id="inp-hair-style">
-        <option value="0">ผมสั้นน่ารัก</option>
-        <option value="1">ผมยาวประบ่า</option>
-        <option value="2">ผมมัดจุก</option>
-        <option value="3">มงกุฎดอกไม้</option>
-        <option value="4">หมวกหมาป่าชนเผ่า (เหมือนในรูป)</option>
-      </select>
+      <div class="form-group">
+        <label>เลือกชุดไทย & เครื่องแต่งกาย</label>
+        <select id="inp-outfit-style">
+          <option value="chakkri" selected>ชุดไทยจักรี (สไบเฉียง + ผ้าถุงหน้านาง)</option>
+          <option value="siwalai">ชุดไทยศิวาลัย / บรมพิมานแขนยาว</option>
+          <option value="raj_pattern">ชุดไทยราชปะแตน + โจงกระเบน</option>
+          <option value="lanna">ชุดไทยล้านนา (เสื้อปั๊ด + ผ้าซิ่นตีนจก)</option>
+          <option value="boran">ชุดไทยโบราณ (ผ้าแถบ / เสื้อม่อฮ่อม-ผ้าขาวม้า)</option>
+          <option value="tribal">ชุดชนเผ่าพื้นเมือง (สไตล์ในรูป)</option>
+        </select>
+      </div>
     </div>
 
     <div class="form-group">
@@ -364,24 +483,33 @@
     </div>
 
     <div class="form-group">
-      <label>สีผม</label>
+      <label>สีผม (เลือกสีสำเร็จหรือแตะวงล้อสี)</label>
       <div class="swatches" id="sw-hair"></div>
     </div>
 
-    <div class="form-group">
-      <label>สีชุด</label>
-      <div class="swatches" id="sw-outfit"></div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>สีสไบ / เสื้อท่อนบน</label>
+        <div class="swatches" id="sw-outfit"></div>
+      </div>
+      <div class="form-group">
+        <label>สีผ้าถุง / โจงกระเบน</label>
+        <div class="swatches" id="sw-bottom"></div>
+      </div>
     </div>
 
-    <button class="btn btn-primary" id="btn-start" style="width:100%; justify-content:center; padding:11px; font-size:15px; margin-top:4px;">
-      เข้าสู่ริมแม่น้ำ ✨
-    </button>
+    <div style="display:flex; gap:8px; margin-top:6px;">
+      <button type="button" class="btn btn-ghost" id="btn-close-wardrobe" style="display:none; flex:1; justify-content:center;">ปิด</button>
+      <button type="button" class="btn btn-primary" id="btn-start" style="flex:2; justify-content:center; padding:11px; font-size:15px;">
+        เข้าสู่ริมแม่น้ำ ✨
+      </button>
+    </div>
   </div>
 </div>
 
 <!-- Krathong Modal -->
 <div class="overlay" id="modal-krathong" style="display:none;">
-  <div class="card">
+  <div class="card" style="width:400px;">
     <h2>🪷 ประดิษฐ์กระทงอธิษฐาน</h2>
     <p class="sub">ตัวละครจะเดินลงไปริมตลิ่งและปล่อยกระทงพร้อมกันทั้ง 2 จอ</p>
 
@@ -411,8 +539,8 @@
     </div>
 
     <div style="display:flex; gap:8px; margin-top:14px;">
-      <button class="btn btn-ghost" id="btn-k-cancel" style="flex:1; justify-content:center;">ยกเลิก</button>
-      <button class="btn btn-primary" id="btn-k-launch" style="flex:2; justify-content:center;">🙏 อธิษฐานและลอยกระทง</button>
+      <button type="button" class="btn btn-ghost" id="btn-k-cancel" style="flex:1; justify-content:center;">ยกเลิก</button>
+      <button type="button" class="btn btn-primary" id="btn-k-launch" style="flex:2; justify-content:center;">🙏 อธิษฐานและลอยกระทง</button>
     </div>
   </div>
 </div>
@@ -431,16 +559,22 @@
   const initialRoom = (params.get('room') || ('LOVE' + Math.floor(100 + Math.random() * 900))).toUpperCase();
   document.getElementById('inp-room').value = initialRoom;
 
-  // Customization palettes
-  const skinColors = ['#ffdbac', '#f1c27d', '#e0ac69', '#c68642', '#8d5524'];
-  const hairColors = ['#231712', '#5c3824', '#d4a359', '#e11d48', '#7c3aed', '#e2e8f0'];
-  const outfitColors = ['#8d5524', '#b91c1c', '#1d4ed8', '#047857', '#6d28d9', '#d97706', '#db2777'];
+  // Customization State & Palettes
+  const skinColors = ['#ffe5d0', '#ffdbac', '#f1c27d', '#e0ac69', '#c68642', '#8d5524'];
+  const hairColors = ['#1c1410', '#4a2c18', '#9a6b32', '#e2b758', '#be123c', '#6d28d9', '#e2e8f0'];
+  const outfitColors = ['#f472b6', '#f8fafc', '#fbbf24', '#38bdf8', '#34d399', '#a78bfa', '#e11d48', '#8d5524'];
+  const bottomColors = ['#7e22ce', '#be185d', '#1e40af', '#065f46', '#92400e', '#b91c1c', '#334155', '#d97706'];
 
-  let selSkin = skinColors[1];
+  let selGender = 'female';
+  let selSkin = skinColors[2];
   let selHair = hairColors[0];
   let selOutfit = outfitColors[0];
+  let selBottom = bottomColors[0];
+  let previewDirIdx = 0;
+  const previewDirs = ['down', 'right', 'up', 'left'];
+  let hasJoinedRoom = false;
 
-  function setupSwatches(id, list, defaultIdx, onPick) {
+  function setupSwatches(id, list, defaultIdx, onPick, allowCustom = false) {
     const container = document.getElementById(id);
     list.forEach((col, i) => {
       const d = document.createElement('div');
@@ -454,30 +588,100 @@
       };
       container.appendChild(d);
     });
+
+    if (allowCustom) {
+      const wrap = document.createElement('label');
+      wrap.className = 'color-picker-wrap';
+      wrap.title = 'เลือกสีเองได้อิสระ';
+      const inp = document.createElement('input');
+      inp.type = 'color';
+      inp.value = list[defaultIdx];
+      inp.oninput = (e) => {
+        container.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+        onPick(e.target.value);
+        renderPreview();
+      };
+      wrap.appendChild(inp);
+      container.appendChild(wrap);
+    }
   }
-  setupSwatches('sw-skin', skinColors, 1, c => selSkin = c);
-  setupSwatches('sw-hair', hairColors, 0, c => selHair = c);
-  setupSwatches('sw-outfit', outfitColors, 0, c => selOutfit = c);
+
+  setupSwatches('sw-skin', skinColors, 2, c => selSkin = c, false);
+  setupSwatches('sw-hair', hairColors, 0, c => selHair = c, true);
+  setupSwatches('sw-outfit', outfitColors, 0, c => selOutfit = c, true);
+  setupSwatches('sw-bottom', bottomColors, 0, c => selBottom = c, true);
+
   document.getElementById('inp-hair-style').onchange = renderPreview;
+  document.getElementById('inp-outfit-style').onchange = renderPreview;
+
+  document.getElementById('btn-rot-left').onclick = () => {
+    previewDirIdx = (previewDirIdx + 3) % 4;
+    renderPreview();
+  };
+  document.getElementById('btn-rot-right').onclick = () => {
+    previewDirIdx = (previewDirIdx + 1) % 4;
+    renderPreview();
+  };
+
+  // Gender buttons
+  document.querySelectorAll('.gender-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selGender = btn.dataset.gender;
+
+      // Auto-suggest matching Thai outfit & hair when switching gender (user can still customize freely)
+      const hairSel = document.getElementById('inp-hair-style');
+      const outfitSel = document.getElementById('inp-outfit-style');
+      if (selGender === 'male') {
+        if (hairSel.value === '1' || hairSel.value === '3') hairSel.value = '0';
+        if (outfitSel.value === 'chakkri') {
+          outfitSel.value = 'raj_pattern';
+          selOutfit = '#f8fafc';
+          selBottom = '#1e40af';
+        }
+      } else {
+        if (hairSel.value === '0') hairSel.value = '1';
+        if (outfitSel.value === 'raj_pattern') {
+          outfitSel.value = 'chakkri';
+          selOutfit = '#f472b6';
+          selBottom = '#7e22ce';
+        }
+      }
+      renderPreview();
+    };
+  });
+
+  function getCurrentAvatarConfig() {
+    return {
+      gender: selGender,
+      skin: selSkin,
+      hairColor: selHair,
+      hairStyle: Number(document.getElementById('inp-hair-style').value),
+      outfitStyle: document.getElementById('inp-outfit-style').value,
+      outfitColor: selOutfit,
+      bottomColor: selBottom
+    };
+  }
 
   function renderPreview() {
-    prevCtx.clearRect(0, 0, 84, 84);
+    prevCtx.clearRect(0, 0, 110, 110);
+    prevCtx.save();
+    // Draw at 1.6x scale in preview box so user can see every detail of Thai outfit
+    prevCtx.translate(55, 92);
+    prevCtx.scale(1.65, 1.65);
     const dummy = {
       id: 'preview',
       name: '',
-      renderX: 42,
-      renderY: 68,
-      dir: 'down',
+      renderX: 0,
+      renderY: 0,
+      dir: previewDirs[previewDirIdx],
       moving: false,
       kneeling: false,
-      avatar: {
-        skin: selSkin,
-        hairColor: selHair,
-        hairStyle: Number(document.getElementById('inp-hair-style').value),
-        outfitColor: selOutfit
-      }
+      avatar: getCurrentAvatarConfig()
     };
     drawCharacter(prevCtx, dummy, performance.now(), true);
+    prevCtx.restore();
   }
   renderPreview();
 
@@ -578,12 +782,12 @@
     btnStart.disabled = true;
     btnStart.textContent = 'กำลังเข้าสู่ริมแม่น้ำ...';
 
-    // Try creating room as Host first
     peer = new Peer(hostId, PEER_OPTS);
 
     peer.on('open', (id) => {
       isHost = true;
       selfId = id;
+      hasJoinedRoom = true;
       const me = makePlayerObj(selfId, rawName, avatar);
       players.set(selfId, me);
       updateHudCount();
@@ -612,7 +816,6 @@
 
     peer.on('error', (err) => {
       if (err.type === 'unavailable-id') {
-        // Room already exists -> join as Guest
         peer.destroy();
         connectGuest(hostId, rawName, avatar);
       } else {
@@ -636,6 +839,7 @@
       hostConn = peer.connect(hostId, { reliable: true });
 
       hostConn.on('open', () => {
+        hasJoinedRoom = true;
         document.getElementById('status-dot').textContent = '🟢';
         document.getElementById('modal-join').style.display = 'none';
         hostConn.send({ type: 'join', player: me });
@@ -670,20 +874,23 @@
       updateHudCount();
       appendChat('ระบบ', `${np.name} เดินทางมาถึงริมแม่น้ำแล้ว 💕`, '#f472b6');
 
-      // Send full room state to the new guest
       conn.send({
         type: 'init',
         players: Array.from(players.values()),
         krathongs
       });
-
-      // Notify any other guests
       hostBroadcast({ type: 'joined', player: np }, conn.peer);
     } else if (msg.type === 'move') {
       const p = players.get(conn.peer);
       if (p) {
         p.x = msg.x; p.y = msg.y; p.dir = msg.dir; p.moving = msg.moving; p.kneeling = msg.kneeling;
         hostBroadcast({ type: 'move', id: conn.peer, x: p.x, y: p.y, dir: p.dir, moving: p.moving, kneeling: p.kneeling }, conn.peer);
+      }
+    } else if (msg.type === 'avatar') {
+      const p = players.get(conn.peer);
+      if (p && msg.avatar) {
+        p.avatar = msg.avatar;
+        hostBroadcast({ type: 'avatar', id: conn.peer, avatar: p.avatar }, conn.peer);
       }
     } else if (msg.type === 'chat') {
       const p = players.get(conn.peer);
@@ -730,6 +937,11 @@
       if (p && msg.id !== selfId) {
         p.x = msg.x; p.y = msg.y; p.dir = msg.dir; p.moving = msg.moving; p.kneeling = msg.kneeling;
       }
+    } else if (msg.type === 'avatar') {
+      const p = players.get(msg.id);
+      if (p && msg.id !== selfId && msg.avatar) {
+        p.avatar = msg.avatar;
+      }
     } else if (msg.type === 'sync') {
       msg.players.forEach(sp => {
         if (sp.id === selfId) return;
@@ -739,6 +951,7 @@
           players.set(sp.id, sp);
         } else {
           p.x = sp.x; p.y = sp.y; p.dir = sp.dir; p.moving = sp.moving; p.kneeling = sp.kneeling;
+          if (sp.avatar) p.avatar = sp.avatar;
         }
       });
       updateHudCount();
@@ -765,7 +978,7 @@
   function spawnEmote(playerId, emoji) {
     const p = players.get(playerId);
     if (!p) return;
-    emotes.push({ x: p.renderX, y: p.renderY - 46, emoji, life: 1.0 });
+    emotes.push({ x: p.renderX, y: p.renderY - 50, emoji, life: 1.0 });
   }
 
   function spawnLantern(x, owner) {
@@ -782,15 +995,39 @@
 
   // ==================== UI EVENTS ====================
   document.getElementById('btn-start').onclick = () => {
-    const name = document.getElementById('inp-name').value.trim() || 'คู่รักนักเดินทาง';
-    const room = document.getElementById('inp-room').value.trim() || initialRoom;
-    const hairStyle = Number(document.getElementById('inp-hair-style').value);
-    joinRoom(room, name, {
-      skin: selSkin,
-      hairColor: selHair,
-      hairStyle,
-      outfitColor: selOutfit
-    });
+    const avatar = getCurrentAvatarConfig();
+
+    if (!hasJoinedRoom) {
+      const name = document.getElementById('inp-name').value.trim() || 'คู่รักนักเดินทาง';
+      const room = document.getElementById('inp-room').value.trim() || initialRoom;
+      joinRoom(room, name, avatar);
+    } else {
+      // Updating outfit inside the room!
+      const me = players.get(selfId);
+      if (me) {
+        me.avatar = avatar;
+        sendPacket({ type: 'avatar', id: selfId, avatar });
+        showToast('✨ เปลี่ยนชุดเรียบร้อยแล้ว!');
+      }
+      document.getElementById('modal-join').style.display = 'none';
+    }
+  };
+
+  // Open In-Game Wardrobe anytime
+  document.getElementById('btn-wardrobe').onclick = () => {
+    document.getElementById('modal-title').textContent = '👗 ห้องแต่งตัวชุดไทย';
+    document.getElementById('modal-sub').textContent = 'เปลี่ยนชุด ทรงผม สีผม แล้วแฟนจะเห็นทันทีแบบ Real-time';
+    document.getElementById('room-name-row').style.display = 'none';
+    document.getElementById('btn-close-wardrobe').style.display = 'inline-flex';
+    const btnStart = document.getElementById('btn-start');
+    btnStart.disabled = false;
+    btnStart.textContent = 'บันทึกชุดใหม่ ✨';
+    renderPreview();
+    document.getElementById('modal-join').style.display = 'flex';
+  };
+
+  document.getElementById('btn-close-wardrobe').onclick = () => {
+    document.getElementById('modal-join').style.display = 'none';
   };
 
   document.getElementById('btn-invite').onclick = () => {
@@ -861,7 +1098,6 @@
     document.getElementById('btn-hold-hands').classList.remove('active');
     clickTarget = null;
 
-    // Move to shoreline & kneel
     me.y = 312;
     me.dir = 'down';
     me.kneeling = true;
@@ -893,7 +1129,7 @@
     }, 1500);
   };
 
-  // Input Controls (Keyboard + Tap/Click)
+  // Input Controls
   window.addEventListener('keydown', e => {
     if (document.activeElement.tagName === 'INPUT') return;
     keys[e.key.toLowerCase()] = true;
@@ -910,7 +1146,6 @@
     const cx = (e.clientX - rect.left) * (canvas.width / rect.width);
     const cy = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-    // Check if clicked on a floating krathong
     for (let i = krathongs.length - 1; i >= 0; i--) {
       const k = krathongs[i];
       if (Math.hypot(cx - k.x, cy - k.y) < 26) {
@@ -919,7 +1154,6 @@
       }
     }
 
-    // Walk on shore
     if (holdingHands) {
       holdingHands = false;
       document.getElementById('btn-hold-hands').classList.remove('active');
@@ -931,11 +1165,10 @@
 
   // ==================== PIXEL ART RENDERER ====================
   function drawScene(t) {
-    // 1. Lush forest grass background
+    // 1. Forest grass
     ctx.fillStyle = '#264e27';
     ctx.fillRect(0, 0, 960, 290);
 
-    // Grass texture blades
     ctx.fillStyle = '#1d3e1e';
     for (let gx = 130; gx < 950; gx += 48) {
       for (let gy = 25; gy < 255; gy += 44) {
@@ -944,19 +1177,17 @@
       }
     }
 
-    // 2. Left rocky cliff & waterfall (like reference image)
+    // 2. Cliff & waterfall
     ctx.fillStyle = '#232b32';
     ctx.fillRect(0, 0, 250, 255);
     ctx.fillStyle = '#36414b';
     ctx.fillRect(130, 30, 125, 225);
     ctx.fillStyle = '#4b5866';
     ctx.fillRect(145, 50, 95, 185);
-    // Glowing blue crystals on cliff
     ctx.fillStyle = '#7dd3fc';
     ctx.fillRect(172, 74, 4, 4);
     ctx.fillRect(205, 118, 4, 4);
 
-    // Waterfall stream
     ctx.fillStyle = '#1e6091';
     ctx.fillRect(0, 0, 124, 316);
     ctx.fillStyle = '#38bdf8';
@@ -966,11 +1197,10 @@
       ctx.fillRect(52, wy + 8, 24, 15);
       ctx.fillRect(92, wy + 3, 16, 15);
     }
-    // Waterfall base splash foam
     ctx.fillStyle = '#e0f2fe';
     ctx.fillRect(6, 304 + Math.sin(t / 140) * 2, 114, 9);
 
-    // 3. Center Sacred Stone Altar & Ceremonial Ground (like reference image)
+    // 3. Sacred Stone Altar
     ctx.fillStyle = '#5e3a20';
     ctx.beginPath();
     ctx.ellipse(540, 128, 145, 72, 0, 0, Math.PI * 2);
@@ -979,21 +1209,17 @@
     ctx.lineWidth = 4;
     ctx.stroke();
 
-    // Tribal geometric floor markings
     ctx.fillStyle = '#3e2412';
     ctx.fillRect(575, 120, 42, 4);
     ctx.fillRect(594, 106, 4, 32);
 
-    // Stone Totem Monolith
     ctx.fillStyle = '#8c7a6b';
     ctx.fillRect(514, 52, 52, 68);
     ctx.fillStyle = '#a89686';
     ctx.fillRect(522, 38, 36, 22);
-    // Flower garland on totem
     ctx.fillStyle = '#facc15';
     ctx.fillRect(516, 68, 48, 5);
 
-    // Flower Pots left & right
     ctx.fillStyle = '#9a3412';
     ctx.fillRect(476, 92, 24, 24);
     ctx.fillRect(580, 92, 24, 24);
@@ -1002,7 +1228,6 @@
     ctx.fillStyle = '#f43f5e';
     ctx.fillRect(582, 82, 20, 10);
 
-    // Altar Candles
     [[498, 106], [572, 106]].forEach(([cx, cy], idx) => {
       ctx.fillStyle = '#fef3c7';
       ctx.fillRect(cx, cy, 8, 14);
@@ -1010,11 +1235,10 @@
       ctx.fillRect(cx + 2, cy - 5 + Math.sin(t / 90 + idx), 4, 5);
     });
 
-    // Wooden ritual bench
     ctx.fillStyle = '#78350f';
     ctx.fillRect(508, 134, 64, 12);
 
-    // 4. Cobblestone Shoreline Bank
+    // 4. Cobblestone Shoreline
     ctx.fillStyle = '#968c7e';
     ctx.fillRect(114, 264, 846, 50);
     ctx.fillStyle = '#b5ab9c';
@@ -1023,11 +1247,10 @@
         ctx.fillRect(px + (py % 32 === 0 ? 10 : 0), py, 19, 10);
       }
     }
-    // Pale sand edge
     ctx.fillStyle = '#e7d2b8';
     ctx.fillRect(114, 311, 846, 8);
 
-    // 5. River Water (Shallow pebbled turquoise -> Deep night teal)
+    // 5. River Water
     const grad = ctx.createLinearGradient(0, 319, 0, 540);
     grad.addColorStop(0, '#1f7a74');
     grad.addColorStop(0.28, '#135263');
@@ -1035,7 +1258,6 @@
     ctx.fillStyle = grad;
     ctx.fillRect(0, 319, 960, 221);
 
-    // Shallow river pebbles & ripples
     ctx.fillStyle = 'rgba(167, 243, 208, 0.22)';
     const ripple = Math.sin(t / 380) * 6;
     for (let rx = 124; rx < 945; rx += 32) {
@@ -1044,7 +1266,7 @@
       ctx.fillRect(rx + ripple * 0.6, 362, 14, 4);
     }
 
-    // 6. Warm Glowing Torches along bank and shallow water
+    // 6. Torches
     const torches = [
       [270, 214], [575, 214], [810, 214],
       [230, 318], [625, 322]
@@ -1073,7 +1295,6 @@
     const x = k.x;
     const y = k.y + bob;
 
-    // Emerald-gold glow aura on water (like reference image)
     const aura = ctx.createRadialGradient(x, y, 2, x, y, 28);
     aura.addColorStop(0, 'rgba(110, 231, 183, 0.58)');
     aura.addColorStop(0.5, 'rgba(253, 224, 71, 0.25)');
@@ -1101,7 +1322,6 @@
       ctx.fill();
       ctx.fillRect(x - 8, y, 16, 5);
     } else {
-      // Lotus krathong
       ctx.fillStyle = '#16a34a';
       ctx.fillRect(x - 12, y - 2, 24, 6);
       ctx.fillStyle = '#f472b6';
@@ -1110,7 +1330,6 @@
       ctx.fillRect(x - 5, y - 8, 10, 3);
     }
 
-    // Candle & flickering flame
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(x - 1.5, y - 12, 3, 7);
     const fl = Math.sin(t / 75 + k.seed) * 1.5;
@@ -1118,6 +1337,7 @@
     ctx.fillRect(x - 2.5, y - 17 + fl, 5, 5);
   }
 
+  // ==================== DETAILED THAI OUTFIT & CHARACTER RENDERER ====================
   function drawCharacter(c, p, t, isPreview = false) {
     const x = Math.round(p.renderX);
     const y = Math.round(p.renderY);
@@ -1125,85 +1345,272 @@
     const squat = p.kneeling ? 6 : 0;
 
     // Ground shadow
-    c.fillStyle = 'rgba(0, 0, 0, 0.36)';
+    c.fillStyle = 'rgba(0, 0, 0, 0.38)';
     c.beginPath();
-    c.ellipse(x, y + 2, 11, 5, 0, 0, Math.PI * 2);
+    c.ellipse(x, y + 2, 12, 5, 0, 0, Math.PI * 2);
     c.fill();
 
     const by = y - walkBob + squat;
-    const av = p.avatar;
+    const av = p.avatar || {};
+    const gender = av.gender || 'female';
+    const outfit = av.outfitStyle || 'chakkri';
+    const topCol = av.outfitColor || '#f472b6';
+    const botCol = av.bottomColor || '#7e22ce';
+    const skin = av.skin || '#f1c27d';
 
-    // Legs
-    c.fillStyle = av.skin;
-    c.fillRect(x - 6, by - 8, 4, 8 - squat / 2);
-    c.fillRect(x + 2, by - 8, 4, 8 - squat / 2);
+    // 1. Feet / Legs (visible below Chong Kraben or ankles)
+    c.fillStyle = skin;
+    c.fillRect(x - 6, by - 6, 4, 6 - squat / 2);
+    c.fillRect(x + 2, by - 6, 4, 6 - squat / 2);
 
-    // Outfit / Tunic
-    c.fillStyle = av.outfitColor;
-    c.fillRect(x - 8, by - 23, 16, 16);
-    // Belt accent
-    c.fillStyle = 'rgba(255,255,255,0.25)';
-    c.fillRect(x - 8, by - 13, 16, 2);
+    // 2. Arms (skin base)
+    c.fillStyle = skin;
+    c.fillRect(x - 11, by - 23, 3, 11);
+    c.fillRect(x + 8, by - 23, 3, 11);
 
-    // Head
-    c.fillStyle = av.skin;
-    c.fillRect(x - 8, by - 37, 16, 14);
+    // 3. Outfits (Thai Traditional Costumes!)
+    if (outfit === 'chakkri') {
+      // ชุดไทยจักรี: สไบเฉียงเปิดไหล่ขวา + เข็มขัดทอง + ผ้าถุงหน้านางยาว
+      c.fillStyle = skin;
+      c.fillRect(x - 8, by - 24, 16, 10); // bare upper torso/shoulder
 
-    // Eyes
-    c.fillStyle = '#1e293b';
-    if (p.dir !== 'up') {
-      const eo = p.dir === 'left' ? -2 : p.dir === 'right' ? 2 : 0;
-      c.fillRect(x - 4 + eo, by - 30, 2, 3);
-      c.fillRect(x + 2 + eo, by - 30, 2, 3);
+      // Sbai diagonal sash across chest
+      c.fillStyle = topCol;
+      c.fillRect(x - 8, by - 24, 6, 11);
+      c.fillRect(x - 5, by - 21, 9, 8);
+      c.fillRect(x + 2, by - 17, 6, 5);
+      // Gold Sbai trim
+      c.fillStyle = '#fde047';
+      c.fillRect(x - 2, by - 24, 2, 11);
+
+      // Long Pha Sin skirt
+      c.fillStyle = botCol;
+      c.fillRect(x - 8, by - 14, 16, 13 - squat / 2);
+      // Gold pleated front panel (หน้านาง)
+      c.fillStyle = '#facc15';
+      c.fillRect(x - 2, by - 14, 4, 13 - squat / 2);
+      // Gold Thai belt (เข็มขัดทอง)
+      c.fillStyle = '#fde047';
+      c.fillRect(x - 8, by - 15, 16, 2);
+
+    } else if (outfit === 'siwalai') {
+      // ชุดไทยศิวาลัย / บรมพิมาน: เสื้อแขนยาวพอดีตัว + สไบทับ + ผ้าถุงยกทอง
+      c.fillStyle = topCol;
+      c.fillRect(x - 8, by - 24, 16, 11);
+      // Long sleeves
+      c.fillRect(x - 11, by - 24, 3, 10);
+      c.fillRect(x + 8, by - 24, 3, 10);
+      // Gold collar & cuffs
+      c.fillStyle = '#fde047';
+      c.fillRect(x - 4, by - 24, 8, 2);
+      c.fillRect(x - 11, by - 16, 3, 2);
+      c.fillRect(x + 8, by - 16, 3, 2);
+
+      // Long silk skirt with gold hem
+      c.fillStyle = botCol;
+      c.fillRect(x - 8, by - 13, 16, 12 - squat / 2);
+      c.fillStyle = '#facc15';
+      c.fillRect(x - 8, by - 14, 16, 2); // belt
+      c.fillRect(x - 8, by - 4 - squat / 2, 16, 2); // gold hem
+
+    } else if (outfit === 'raj_pattern') {
+      // ชุดไทยราชปะแตน + โจงกระเบน
+      c.fillStyle = topCol;
+      c.fillRect(x - 8, by - 24, 16, 12);
+      // Long sleeves
+      c.fillRect(x - 11, by - 24, 3, 10);
+      c.fillRect(x + 8, by - 24, 3, 10);
+      // Standing collar & 5 gold buttons
+      c.fillStyle = '#eab308';
+      c.fillRect(x - 3, by - 25, 6, 2);
+      c.fillRect(x - 1, by - 22, 2, 2);
+      c.fillRect(x - 1, by - 19, 2, 2);
+      c.fillRect(x - 1, by - 16, 2, 2);
+
+      // Silk waist sash
+      c.fillStyle = botCol;
+      c.fillRect(x - 8, by - 13, 16, 2);
+      // Puffy Chong Kraben (โจงกระเบน)
+      c.fillRect(x - 9, by - 11, 8, 6);
+      c.fillRect(x + 1, by - 11, 8, 6);
+      c.fillRect(x - 3, by - 11, 6, 7);
+
+    } else if (outfit === 'lanna') {
+      // ชุดไทยล้านนา: เสื้อปั๊ดป้ายข้าง + ผ้าซิ่นตีนจกมีลายเชิง
+      c.fillStyle = topCol;
+      c.fillRect(x - 8, by - 24, 16, 11);
+      c.fillRect(x - 11, by - 24, 3, 9);
+      c.fillRect(x + 8, by - 24, 3, 9);
+      // Diagonal Lanna lapel trim
+      c.fillStyle = '#fde047';
+      c.fillRect(x - 3, by - 24, 2, 6);
+      c.fillRect(x - 1, by - 19, 5, 2);
+
+      // Northern Pha Sin skirt with woven stripes
+      c.fillStyle = botCol;
+      c.fillRect(x - 8, by - 13, 16, 12 - squat / 2);
+      c.fillStyle = '#f43f5e';
+      c.fillRect(x - 8, by - 6 - squat / 2, 16, 2);
+      c.fillStyle = '#fde047';
+      c.fillRect(x - 8, by - 4 - squat / 2, 16, 2);
+
+    } else if (outfit === 'boran') {
+      // ชุดไทยชาวบ้านโบราณ (หญิง: ผ้าแถบ+โจงกระเบน / ชาย: เสื้อม่อฮ่อม+ผ้าขาวม้า+โจงกระเบน)
+      if (gender === 'female') {
+        c.fillStyle = skin;
+        c.fillRect(x - 8, by - 24, 16, 12);
+        // Chest wrap cloth (ผ้าแถบ)
+        c.fillStyle = topCol;
+        c.fillRect(x - 8, by - 21, 16, 6);
+      } else {
+        c.fillStyle = topCol;
+        c.fillRect(x - 8, by - 24, 16, 12);
+        c.fillRect(x - 11, by - 24, 3, 7);
+        c.fillRect(x + 8, by - 24, 3, 7);
+        // Pha Khao Ma sash (ผ้าขาวม้าพาดบ่า)
+        c.fillStyle = '#ef4444';
+        c.fillRect(x - 7, by - 24, 4, 12);
+        c.fillStyle = '#fde047';
+        c.fillRect(x - 6, by - 22, 2, 2);
+        c.fillRect(x - 6, by - 18, 2, 2);
+      }
+      // Chong Kraben
+      c.fillStyle = botCol;
+      c.fillRect(x - 9, by - 12, 8, 7);
+      c.fillRect(x + 1, by - 12, 8, 7);
+      c.fillRect(x - 3, by - 12, 6, 8);
+
+    } else {
+      // Tribal outfit (ชุดชนเผ่าพื้นเมืองสไตล์ในรูป)
+      c.fillStyle = topCol;
+      c.fillRect(x - 8, by - 24, 16, 15);
+      // Shell/bone necklace
+      c.fillStyle = '#fef3c7';
+      c.fillRect(x - 4, by - 23, 8, 2);
+      // Fur hem
+      c.fillStyle = botCol;
+      c.fillRect(x - 8, by - 11, 16, 5);
     }
 
-    // Hair & Accessories
-    c.fillStyle = av.hairColor;
-    c.fillRect(x - 9, by - 40, 18, 6);
-    if (av.hairStyle === 1) {
-      // Long hair
-      c.fillRect(x - 10, by - 36, 3, 15);
-      c.fillRect(x + 7, by - 36, 3, 15);
-    } else if (av.hairStyle === 2) {
-      // Bun
-      c.fillRect(x - 3, by - 45, 6, 5);
-    } else if (av.hairStyle === 3) {
-      // Flower crown
-      c.fillStyle = '#f43f5e';
-      c.fillRect(x - 8, by - 41, 4, 3);
-      c.fillStyle = '#facc15';
-      c.fillRect(x - 2, by - 41, 4, 3);
-      c.fillStyle = '#38bdf8';
-      c.fillRect(x + 4, by - 41, 4, 3);
-    } else if (av.hairStyle === 4) {
-      // Tribal wolf hood (like reference image right side)
+    // 4. Head
+    c.fillStyle = skin;
+    c.fillRect(x - 8, by - 38, 16, 14);
+
+    // 5. Face Features (Gender-aware eyes, brows, blush)
+    if (p.dir !== 'up') {
+      const eo = p.dir === 'left' ? -2 : p.dir === 'right' ? 2 : 0;
+
+      // Eyebrows
+      c.fillStyle = av.hairColor || '#1c1410';
+      if (gender === 'male') {
+        c.fillRect(x - 5 + eo, by - 33, 4, 1);
+        c.fillRect(x + 1 + eo, by - 33, 4, 1);
+      } else {
+        c.fillRect(x - 4 + eo, by - 33, 3, 1);
+        c.fillRect(x + 1 + eo, by - 33, 3, 1);
+      }
+
+      // Eyes
+      c.fillStyle = '#1e293b';
+      c.fillRect(x - 4 + eo, by - 31, 2, 3);
+      c.fillRect(x + 2 + eo, by - 31, 2, 3);
+
+      // Female eyelashes & rosy blush
+      if (gender === 'female') {
+        c.fillRect(x - 5 + eo, by - 31, 1, 1);
+        c.fillRect(x + 4 + eo, by - 31, 1, 1);
+        c.fillStyle = 'rgba(244, 63, 94, 0.42)';
+        c.fillRect(x - 6 + eo, by - 28, 2, 2);
+        c.fillRect(x + 4 + eo, by - 28, 2, 2);
+      }
+    }
+
+    // 6. Hairstyles & Headpieces (9 styles!)
+    const hs = Number(av.hairStyle || 0);
+    c.fillStyle = av.hairColor || '#1c1410';
+
+    if (hs === 8) {
+      // หมวกหมาป่าชนเผ่า (Tribal wolf hood)
       c.fillStyle = '#94a3b8';
-      c.fillRect(x - 10, by - 42, 20, 8);
-      c.fillRect(x - 10, by - 46, 4, 4);
-      c.fillRect(x + 6, by - 46, 4, 4);
+      c.fillRect(x - 10, by - 43, 20, 8);
+      c.fillRect(x - 10, by - 47, 4, 4);
+      c.fillRect(x + 6, by - 47, 4, 4);
       c.fillStyle = '#cbd5e1';
-      c.fillRect(x - 10, by - 34, 3, 10);
-      c.fillRect(x + 7, by - 34, 3, 10);
+      c.fillRect(x - 10, by - 35, 3, 11);
+      c.fillRect(x + 7, by - 35, 3, 11);
+    } else {
+      // Base hair cap
+      c.fillRect(x - 9, by - 41, 18, 6);
+      if (p.dir === 'up') {
+        c.fillRect(x - 9, by - 36, 18, 10);
+      }
+
+      if (hs === 0) {
+        // ผมสั้นซอยเท่
+        c.fillRect(x - 9, by - 36, 2, 5);
+        c.fillRect(x + 7, by - 36, 2, 5);
+      } else if (hs === 1) {
+        // ผมยาวตรงสลวย
+        c.fillRect(x - 10, by - 36, 3, 18);
+        c.fillRect(x + 7, by - 36, 3, 18);
+      } else if (hs === 2) {
+        // ผมประบ่าปลายงุ้ม
+        c.fillRect(x - 10, by - 36, 3, 11);
+        c.fillRect(x + 7, by - 36, 3, 11);
+      } else if (hs === 3) {
+        // ผมเกล้ามวยไทย + ปิ่นทอง
+        c.fillRect(x - 4, by - 46, 8, 5);
+        c.fillStyle = '#fde047';
+        c.fillRect(x - 5, by - 42, 10, 2); // gold coronet band
+        c.fillRect(x + 4, by - 46, 4, 2);  // gold hairpin
+      } else if (hs === 4) {
+        // ผมมัดหางม้าสูง
+        c.fillRect(x - 3, by - 45, 6, 4);
+        c.fillRect(x + 3, by - 44, 5, 11);
+      } else if (hs === 5) {
+        // ผมเปียสองข้างน่ารัก
+        c.fillRect(x - 11, by - 35, 3, 15);
+        c.fillRect(x + 8, by - 35, 3, 15);
+        c.fillStyle = '#f43f5e';
+        c.fillRect(x - 11, by - 23, 3, 2);
+        c.fillRect(x + 8, by - 23, 3, 2);
+      } else if (hs === 6) {
+        // ผมแสกกลางสไตล์เกาหลี
+        c.fillRect(x - 10, by - 37, 3, 9);
+        c.fillRect(x + 7, by - 37, 3, 9);
+        c.fillStyle = skin;
+        c.fillRect(x - 1, by - 37, 2, 2); // center part gap
+      } else if (hs === 7) {
+        // มงกุฎดอกไม้ + ผมประบ่า
+        c.fillRect(x - 10, by - 36, 3, 12);
+        c.fillRect(x + 7, by - 36, 3, 12);
+        c.fillStyle = '#f43f5e';
+        c.fillRect(x - 8, by - 42, 4, 3);
+        c.fillStyle = '#facc15';
+        c.fillRect(x - 2, by - 42, 4, 3);
+        c.fillStyle = '#38bdf8';
+        c.fillRect(x + 4, by - 42, 4, 3);
+      }
     }
 
     if (isPreview) return;
 
-    // Roblox-style Nameplate
+    // 7. Roblox-style Nameplate
     c.font = 'bold 11px Prompt, sans-serif';
     c.textAlign = 'center';
     const nw = c.measureText(p.name).width + 10;
-    c.fillStyle = 'rgba(13, 21, 32, 0.76)';
-    c.fillRect(x - nw / 2, by - 58, nw, 15);
+    c.fillStyle = 'rgba(13, 21, 32, 0.78)';
+    c.fillRect(x - nw / 2, by - 60, nw, 15);
     c.fillStyle = p.id === selfId ? '#fde047' : '#ffffff';
-    c.fillText(p.name, x, by - 47);
+    c.fillText(p.name, x, by - 49);
 
-    // Roblox-style Overhead Chat Bubble
+    // 8. Roblox-style Overhead Chat Bubble
     const b = bubbles.get(p.id);
     if (b && b.exp > Date.now()) {
       c.font = '12px Prompt, sans-serif';
       const bw = Math.min(210, c.measureText(b.text).width + 18);
       const bx = x - bw / 2;
-      const byBubble = by - 84;
+      const byBubble = by - 86;
       c.fillStyle = '#ffffff';
       c.beginPath();
       c.roundRect(bx, byBubble, bw, 22, 8);
@@ -1243,7 +1650,6 @@
       let vx = 0, vy = 0;
 
       if (holdingHands && players.size > 1) {
-        // Find partner
         let partner = null;
         for (const [id, pl] of players.entries()) {
           if (id !== selfId) { partner = pl; break; }
@@ -1308,7 +1714,6 @@
       }
     }
 
-    // Host periodic sync
     if (isHost && now - lastHeartbeat > 1200) {
       lastHeartbeat = now;
       hostBroadcast({
@@ -1317,13 +1722,11 @@
       });
     }
 
-    // Interpolate players
     players.forEach(p => {
       p.renderX += (p.x - p.renderX) * 0.25;
       p.renderY += (p.y - p.renderY) * 0.25;
     });
 
-    // Drift krathongs
     for (let i = krathongs.length - 1; i >= 0; i--) {
       const k = krathongs[i];
       k.x += k.vx * 18 * dt;
@@ -1333,7 +1736,6 @@
       }
     }
 
-    // Rise lanterns
     for (let i = lanterns.length - 1; i >= 0; i--) {
       const l = lanterns[i];
       l.x += l.vx * 20 * dt;
@@ -1341,11 +1743,9 @@
       if (l.y < -40) lanterns.splice(i, 1);
     }
 
-    // Draw world
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawScene(now);
 
-    // Draw click destination marker
     if (clickTarget) {
       ctx.strokeStyle = 'rgba(253, 224, 71, 0.75)';
       ctx.lineWidth = 2;
@@ -1356,11 +1756,9 @@
 
     krathongs.forEach(k => drawKrathong(k, now));
 
-    // Y-sort players
     const sorted = Array.from(players.values()).sort((a, b) => a.renderY - b.renderY);
     sorted.forEach(p => drawCharacter(ctx, p, now));
 
-    // Draw heart between couple if holding hands
     if (holdingHands && sorted.length >= 2) {
       const p1 = sorted[0];
       const p2 = sorted[1];
@@ -1373,7 +1771,6 @@
 
     lanterns.forEach(l => drawLantern(l, now));
 
-    // Floating emotes
     for (let i = emotes.length - 1; i >= 0; i--) {
       const em = emotes[i];
       em.y -= 36 * dt;
