@@ -3,326 +3,416 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>ลอยกระทงด้วยกัน (Real-time Multiplayer)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&display=swap" rel="stylesheet">
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="config.js"></script>
+  <title>ลอยกระทงด้วยกัน • Real-time Pixel World</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Prompt', sans-serif; user-select: none; }
-    body {
-      background: #0b1622;
-      color: #fff;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Prompt', sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
-    #game-container {
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #07131c;
+      color: #f8fafc;
+      user-select: none;
+    }
+    #game-wrap {
       position: relative;
       width: 100vw;
       height: 100vh;
       display: flex;
-      justify-content: center;
       align-items: center;
-      background: #08111a;
+      justify-content: center;
+      background: #061018;
     }
     canvas {
       width: 100%;
       height: 100%;
       object-fit: cover;
       image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      cursor: pointer;
     }
 
-    /* Top HUD (Roblox Style) */
-    .top-bar {
+    /* HUD Top */
+    .hud-top {
       position: absolute;
-      top: 14px;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 8px;
+      pointer-events: none;
+      z-index: 15;
+    }
+    .pill {
+      pointer-events: auto;
+      background: rgba(13, 21, 32, 0.84);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      padding: 7px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 7px 13px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.12s ease, filter 0.12s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-primary { background: linear-gradient(135deg, #10b981, #059669); }
+    .btn-warm { background: linear-gradient(135deg, #f59e0b, #ea580c); }
+    .btn-pink { background: linear-gradient(135deg, #ec4899, #db2777); }
+    .btn-ghost { background: rgba(255, 255, 255, 0.12); }
+    .btn-ghost.active {
+      background: linear-gradient(135deg, #ec4899, #f43f5e);
+      box-shadow: 0 0 12px rgba(236, 72, 153, 0.55);
+    }
+
+    /* Toast */
+    #toast {
+      position: absolute;
+      top: 66px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(13, 21, 32, 0.94);
+      border: 1px solid #fbbf24;
+      color: #fef3c7;
+      padding: 9px 18px;
+      border-radius: 14px;
+      font-size: 13px;
+      z-index: 25;
+      display: none;
+      text-align: center;
+      max-width: 90vw;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55);
+    }
+
+    /* HUD Bottom */
+    .hud-bottom {
+      position: absolute;
+      bottom: 14px;
       left: 14px;
       right: 14px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      pointer-events: none;
-      z-index: 10;
-    }
-    .hud-pill {
-      pointer-events: auto;
-      background: rgba(18, 24, 34, 0.78);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 14px;
-      padding: 8px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    }
-    .btn {
-      background: linear-gradient(135deg, #ff9f43, #ee5253);
-      border: none;
-      color: #fff;
-      padding: 7px 14px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.12s, filter 0.12s;
-      font-size: 13px;
-    }
-    .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
-    .btn:active { transform: scale(0.97); }
-    .btn-secondary { background: rgba(255,255,255,0.14); }
-    .btn-teal { background: linear-gradient(135deg, #1dd1a1, #10ac84); }
-
-    /* Bottom Controls & Chat */
-    .bottom-bar {
-      position: absolute;
-      bottom: 16px;
-      left: 16px;
-      right: 16px;
-      display: flex;
-      justify-content: space-between;
       align-items: flex-end;
+      gap: 10px;
       pointer-events: none;
-      z-index: 10;
+      z-index: 15;
     }
-    .chat-box {
+    .chat-panel {
       pointer-events: auto;
-      background: rgba(18, 24, 34, 0.82);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      width: 330px;
+      max-width: 62vw;
+      background: rgba(13, 21, 32, 0.84);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 14px;
       padding: 8px;
-      width: 320px;
-      max-width: 60vw;
       display: flex;
       flex-direction: column;
       gap: 6px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
     }
-    .chat-log {
-      max-height: 95px;
+    .chat-messages {
+      max-height: 92px;
       overflow-y: auto;
       font-size: 12px;
+      line-height: 1.45;
       color: #e2e8f0;
       display: flex;
       flex-direction: column;
       gap: 3px;
       padding: 0 4px;
     }
-    .chat-input-row {
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+    .chat-form {
       display: flex;
       gap: 6px;
     }
-    .chat-input-row input {
+    .chat-form input {
       flex: 1;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 8px;
+      min-width: 0;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 9px;
       padding: 6px 10px;
       color: #fff;
       font-size: 13px;
       outline: none;
       user-select: text;
     }
-    .action-panel {
+    .chat-form input:focus { border-color: #34d399; }
+
+    .right-controls {
       pointer-events: auto;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       gap: 8px;
     }
-    .emote-row {
+    .emote-bar {
       display: flex;
-      gap: 6px;
-      background: rgba(18, 24, 34, 0.8);
-      padding: 6px 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.15);
+      gap: 4px;
+      background: rgba(13, 21, 32, 0.84);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 13px;
+      padding: 5px 9px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
     }
     .emote-btn {
-      background: none;
+      background: transparent;
       border: none;
       font-size: 20px;
+      padding: 2px 5px;
       cursor: pointer;
       transition: transform 0.15s;
     }
     .emote-btn:hover { transform: scale(1.25); }
 
     /* Modals */
-    .modal-backdrop {
+    .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(6, 12, 20, 0.85);
-      backdrop-filter: blur(6px);
+      background: rgba(5, 11, 18, 0.86);
+      backdrop-filter: blur(8px);
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       z-index: 50;
+      padding: 16px;
     }
-    .modal {
-      background: #162231;
-      border: 1px solid rgba(255,255,255,0.16);
+    .card {
+      background: #131f2e;
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 20px;
-      padding: 24px;
-      width: 400px;
-      max-width: 92vw;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      padding: 22px;
+      width: 410px;
+      max-width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
     }
-    .modal h2 { font-size: 20px; margin-bottom: 6px; color: #ffd166; }
-    .modal p { font-size: 13px; color: #cbd5e1; margin-bottom: 16px; }
-    .field { margin-bottom: 12px; }
-    .field label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
-    .field input, .field select {
+    .card h2 {
+      font-size: 20px;
+      color: #fbbf24;
+      margin-bottom: 4px;
+    }
+    .card p.sub {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 14px;
+    }
+    .form-group { margin-bottom: 12px; }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+    }
+    .form-group input, .form-group select {
       width: 100%;
-      padding: 9px 12px;
+      background: #0b131d;
+      border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: #0e1722;
+      padding: 9px 12px;
       color: #fff;
       font-size: 14px;
+      outline: none;
       user-select: text;
     }
-    .color-row { display: flex; gap: 8px; flex-wrap: wrap; }
-    .swatch {
-      width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
-      border: 2px solid transparent;
+    .form-group input:focus, .form-group select:focus { border-color: #10b981; }
+    .swatches {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-    .swatch.active { border-color: #fff; transform: scale(1.12); }
-
-    /* Wish Tooltip */
-    #wish-toast {
-      position: absolute;
-      top: 68px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(15, 25, 38, 0.92);
-      border: 1px solid #ffd166;
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 14px;
-      font-size: 13px;
-      display: none;
-      z-index: 20;
-      text-align: center;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    .swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid rgba(255,255,255,0.15);
+      transition: transform 0.12s, border-color 0.12s;
+    }
+    .swatch.active {
+      border-color: #fff;
+      transform: scale(1.15);
+      box-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+    .preview-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0b131d;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 14px;
     }
   </style>
 </head>
 <body>
 
-<div id="game-container">
+<div id="game-wrap">
   <canvas id="world" width="960" height="540"></canvas>
 
-  <div class="top-bar">
-    <div class="hud-pill">
-      <span>🏮 ห้อง: <strong id="hud-room">-</strong></span>
-      <span>👥 ออนไลน์: <strong id="hud-count">1</strong></span>
-      <button class="btn btn-secondary" id="copy-invite-btn">🔗 คัดลอกลิงก์ชวนแฟน</button>
+  <!-- Top HUD -->
+  <div class="hud-top">
+    <div class="pill">
+      <span id="status-dot" title="สถานะการเชื่อมต่อ">🟡</span>
+      <span>ห้อง: <strong id="hud-room">-</strong></span>
+      <span>👥 <strong id="hud-players">1</strong></span>
+      <button class="btn btn-ghost" id="btn-invite">🔗 ชวนแฟน</button>
     </div>
-    <div class="hud-pill">
-      <button class="btn btn-teal" id="open-krathong-btn">🪷 ทำกระทง & ลอยกระทง</button>
+
+    <div class="pill">
+      <button class="btn btn-ghost" id="btn-hold-hands" title="เดินตามและจับมือกับแฟนอัตโนมัติ">🤝 จับมือแฟน</button>
+      <button class="btn btn-warm" id="btn-lantern">🏮 ปล่อยโคมลอย</button>
+      <button class="btn btn-primary" id="btn-krathong">🪷 ลอยกระทง</button>
     </div>
   </div>
 
-  <div id="wish-toast"></div>
+  <div id="toast"></div>
 
-  <div class="bottom-bar">
-    <div class="chat-box">
-      <div class="chat-log" id="chat-log">
-        <div style="color:#ffd166">✨ คลิกที่พื้นหรือใช้ปุ่ม WASD / ลูกศร เพื่อเดินริมตลิ่ง</div>
+  <!-- Bottom HUD -->
+  <div class="hud-bottom">
+    <div class="chat-panel">
+      <div class="chat-messages" id="chat-messages">
+        <div style="color:#fbbf24;">✨ แตะบนพื้นหรือกด WASD / ลูกศร เพื่อเดินริมตลิ่ง</div>
       </div>
-      <div class="chat-input-row">
-        <input type="text" id="chat-input" placeholder="พิมพ์คุยกับแฟน (ข้อความขึ้นบนหัว)..." maxlength="80" />
-        <button class="btn" id="send-chat-btn">ส่ง</button>
-      </div>
+      <form class="chat-form" id="chat-form">
+        <input type="text" id="chat-input" placeholder="พิมพ์ข้อความขึ้นบนหัว..." maxlength="80" autocomplete="off" />
+        <button type="submit" class="btn btn-primary">ส่ง</button>
+      </form>
     </div>
 
-    <div class="action-panel">
-      <div class="emote-row">
+    <div class="right-controls">
+      <div class="emote-bar">
         <button class="emote-btn" data-emote="❤️">❤️</button>
         <button class="emote-btn" data-emote="🥰">🥰</button>
         <button class="emote-btn" data-emote="🙏">🙏</button>
         <button class="emote-btn" data-emote="✨">✨</button>
-        <button class="emote-btn" data-emote="🏮">🏮</button>
+        <button class="emote-btn" data-emote="🌸">🌸</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal เข้าห้อง & แต่งตัวละคร -->
-<div class="modal-backdrop" id="join-modal">
-  <div class="modal">
+<!-- Join / Customize Modal -->
+<div class="overlay" id="modal-join">
+  <div class="card">
     <h2>🏮 ลอยกระทงด้วยกัน (Real-time)</h2>
-    <p>สร้างตัวละครและตั้งรหัสห้องเดียวกันเพื่อเข้ามาเจอกันริมแม่น้ำ</p>
+    <p class="sub">แต่งตัวละครและตั้งรหัสห้องเดียวกันเพื่อเจอกันริมน้ำตก</p>
 
-    <div class="field">
-      <label>ชื่อตัวละครของคุณ (แสดงบนหัวแบบ Roblox)</label>
-      <input type="text" id="input-name" placeholder="เช่น น้องบีม, พี่ภัทร..." maxlength="16" />
+    <div class="preview-box">
+      <canvas id="avatar-preview" width="84" height="84" style="width:84px;height:84px;"></canvas>
     </div>
 
-    <div class="field">
-      <label>รหัสห้อง (ใช้รหัสเดียวกันกับแฟน)</label>
-      <input type="text" id="input-room" placeholder="เช่น LOVE2026" maxlength="12" />
+    <div class="form-group">
+      <label>ชื่อบนหัวตัวละคร (สไตล์ Roblox)</label>
+      <input type="text" id="inp-name" placeholder="เช่น น้องบีม, พี่ภัทร..." maxlength="16" />
     </div>
 
-    <div class="field">
-      <label>ทรงผม</label>
-      <select id="input-hair-style">
+    <div class="form-group">
+      <label>รหัสห้อง (ใช้รหัสเดียวกันทั้ง 2 เครื่อง)</label>
+      <input type="text" id="inp-room" placeholder="เช่น LOVE2026" maxlength="12" />
+    </div>
+
+    <div class="form-group">
+      <label>ทรงผม & เครื่องประดับ</label>
+      <select id="inp-hair-style">
         <option value="0">ผมสั้นน่ารัก</option>
         <option value="1">ผมยาวประบ่า</option>
-        <option value="2">ผมมัดจุก / หางม้า</option>
+        <option value="2">ผมมัดจุก</option>
+        <option value="3">มงกุฎดอกไม้</option>
+        <option value="4">หมวกหมาป่าชนเผ่า (เหมือนในรูป)</option>
       </select>
     </div>
 
-    <div class="field">
+    <div class="form-group">
+      <label>สีผิว</label>
+      <div class="swatches" id="sw-skin"></div>
+    </div>
+
+    <div class="form-group">
       <label>สีผม</label>
-      <div class="color-row" id="hair-colors"></div>
+      <div class="swatches" id="sw-hair"></div>
     </div>
 
-    <div class="field">
+    <div class="form-group">
       <label>สีชุด</label>
-      <div class="color-row" id="outfit-colors"></div>
+      <div class="swatches" id="sw-outfit"></div>
     </div>
 
-    <button class="btn btn-teal" style="width:100%; padding:11px; font-size:15px; margin-top:6px;" id="join-btn">
+    <button class="btn btn-primary" id="btn-start" style="width:100%; justify-content:center; padding:11px; font-size:15px; margin-top:4px;">
       เข้าสู่ริมแม่น้ำ ✨
     </button>
   </div>
 </div>
 
-<!-- Modal ทำกระทง -->
-<div class="modal-backdrop" id="krathong-modal" style="display:none;">
-  <div class="modal">
-    <h2>🪷 ประดิษฐ์กระทงของคุณ</h2>
-    <p>ตัวละครจะเดินไปริมตลิ่งแล้วปล่อยกระทงลงน้ำให้เห็นพร้อมกันทั้ง 2 จอ</p>
+<!-- Krathong Modal -->
+<div class="overlay" id="modal-krathong" style="display:none;">
+  <div class="card">
+    <h2>🪷 ประดิษฐ์กระทงอธิษฐาน</h2>
+    <p class="sub">ตัวละครจะเดินลงไปริมตลิ่งและปล่อยกระทงพร้อมกันทั้ง 2 จอ</p>
 
-    <div class="field">
+    <div class="form-group">
       <label>รูปแบบกระทง</label>
-      <select id="krathong-style">
+      <select id="k-style">
         <option value="lotus">กระทงใบตอง-ดอกบัวเรืองแสง</option>
-        <option value="raft">กระทงแพไม้ไผ่</option>
+        <option value="raft">กระทงแพไม้ไผ่ (สไตล์ในรูป)</option>
         <option value="leaf">กระทงใบบัวธรรมชาติ</option>
+        <option value="heart">กระทงคู่รูปหัวใจ 💕</option>
       </select>
     </div>
 
-    <div class="field">
+    <div class="form-group">
       <label>สีแสงเทียน</label>
-      <select id="krathong-candle">
-        <option value="#ffdd55">เหลืองทองอบอุ่น</option>
-        <option value="#ff7eb3">ชมพูโรแมนติก</option>
-        <option value="#7bed9f">เขียวมรกต</option>
+      <select id="k-candle">
+        <option value="#fde047">เหลืองทองอบอุ่น</option>
+        <option value="#f472b6">ชมพูโรแมนติก</option>
+        <option value="#34d399">เขียวมรกต</option>
+        <option value="#60a5fa">ฟ้าคราม</option>
       </select>
     </div>
 
-    <div class="field">
+    <div class="form-group">
       <label>คำอธิษฐาน (คลิกที่กระทงในน้ำเพื่ออ่านได้)</label>
-      <input type="text" id="krathong-wish" placeholder="ขอให้เราอยู่ด้วยกันไปนานๆ..." maxlength="100" />
+      <input type="text" id="k-wish" placeholder="ขอให้เรารักกันนานๆ มีความสุขด้วยกันตลอดไป..." maxlength="100" />
     </div>
 
     <div style="display:flex; gap:8px; margin-top:14px;">
-      <button class="btn btn-secondary" style="flex:1;" id="close-krathong-btn">ยกเลิก</button>
-      <button class="btn btn-teal" style="flex:2;" id="confirm-krathong-btn">🙏 อธิษฐานและลอยกระทง</button>
+      <button class="btn btn-ghost" id="btn-k-cancel" style="flex:1; justify-content:center;">ยกเลิก</button>
+      <button class="btn btn-primary" id="btn-k-launch" style="flex:2; justify-content:center;">🙏 อธิษฐานและลอยกระทง</button>
     </div>
   </div>
 </div>
@@ -332,518 +422,883 @@
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = false;
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const defaultRoom = (urlParams.get('room') || 'LOVE' + Math.floor(100 + Math.random() * 900)).toUpperCase();
-  document.getElementById('input-room').value = defaultRoom;
+  const prevCanvas = document.getElementById('avatar-preview');
+  const prevCtx = prevCanvas.getContext('2d');
+  prevCtx.imageSmoothingEnabled = false;
 
-  // ตัวเลือกแต่งตัวละคร
-  const hairPalette = ['#2c1e16', '#5c3824', '#d4a359', '#e55039', '#6c5ce7', '#dfe6e9'];
-  const outfitPalette = ['#8d5524', '#c0392b', '#2980b9', '#16a085', '#8e44ad', '#e67e22'];
-  let selectedHair = hairPalette[0];
-  let selectedOutfit = outfitPalette[0];
+  // Read room from URL ?room=XXXX
+  const params = new URLSearchParams(window.location.search);
+  const initialRoom = (params.get('room') || ('LOVE' + Math.floor(100 + Math.random() * 900))).toUpperCase();
+  document.getElementById('inp-room').value = initialRoom;
 
-  function renderSwatches(containerId, colors, onSelect) {
-    const el = document.getElementById(containerId);
-    colors.forEach((c, idx) => {
-      const div = document.createElement('div');
-      div.className = 'swatch' + (idx === 0 ? ' active' : '');
-      div.style.background = c;
-      div.onclick = () => {
-        el.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
-        div.classList.add('active');
-        onSelect(c);
+  // Customization palettes
+  const skinColors = ['#ffdbac', '#f1c27d', '#e0ac69', '#c68642', '#8d5524'];
+  const hairColors = ['#231712', '#5c3824', '#d4a359', '#e11d48', '#7c3aed', '#e2e8f0'];
+  const outfitColors = ['#8d5524', '#b91c1c', '#1d4ed8', '#047857', '#6d28d9', '#d97706', '#db2777'];
+
+  let selSkin = skinColors[1];
+  let selHair = hairColors[0];
+  let selOutfit = outfitColors[0];
+
+  function setupSwatches(id, list, defaultIdx, onPick) {
+    const container = document.getElementById(id);
+    list.forEach((col, i) => {
+      const d = document.createElement('div');
+      d.className = 'swatch' + (i === defaultIdx ? ' active' : '');
+      d.style.background = col;
+      d.onclick = () => {
+        container.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+        d.classList.add('active');
+        onPick(col);
+        renderPreview();
       };
-      el.appendChild(div);
+      container.appendChild(d);
     });
   }
-  renderSwatches('hair-colors', hairPalette, c => selectedHair = c);
-  renderSwatches('outfit-colors', outfitPalette, c => selectedOutfit = c);
+  setupSwatches('sw-skin', skinColors, 1, c => selSkin = c);
+  setupSwatches('sw-hair', hairColors, 0, c => selHair = c);
+  setupSwatches('sw-outfit', outfitColors, 0, c => selOutfit = c);
+  document.getElementById('inp-hair-style').onchange = renderPreview;
 
-  // เชื่อมต่อ Socket.IO
-  const serverUrl = (window.GAME_CONFIG && window.GAME_CONFIG.SERVER_URL) || undefined;
-  const socket = io(serverUrl);
+  function renderPreview() {
+    prevCtx.clearRect(0, 0, 84, 84);
+    const dummy = {
+      id: 'preview',
+      name: '',
+      renderX: 42,
+      renderY: 68,
+      dir: 'down',
+      moving: false,
+      kneeling: false,
+      avatar: {
+        skin: selSkin,
+        hairColor: selHair,
+        hairStyle: Number(document.getElementById('inp-hair-style').value),
+        outfitColor: selOutfit
+      }
+    };
+    drawCharacter(prevCtx, dummy, performance.now(), true);
+  }
+  renderPreview();
+
+  // ==================== GAME STATE ====================
+  let peer = null;
+  let isHost = false;
+  let hostConn = null;
+  const guestConns = new Map();
 
   let selfId = null;
-  let currentRoom = defaultRoom;
+  let roomCode = initialRoom;
   const players = new Map();
   let krathongs = [];
-  const floatingEmotes = [];
-  const chatBubbles = new Map();
+  const lanterns = [];
+  const emotes = [];
+  const bubbles = new Map();
+  let holdingHands = false;
 
-  // สถานะการเดินของตัวเรา
   const keys = {};
-  let targetPos = null;
-  let lastSync = 0;
+  let clickTarget = null;
+  let lastNetSync = 0;
+  let lastHeartbeat = 0;
 
+  const PEER_OPTS = {
+    config: {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' }
+      ]
+    }
+  };
+
+  function showToast(html, duration = 4500) {
+    const el = document.getElementById('toast');
+    el.innerHTML = html;
+    el.style.display = 'block';
+    clearTimeout(el._t);
+    el._t = setTimeout(() => { el.style.display = 'none'; }, duration);
+  }
+
+  function esc(str) {
+    return String(str).replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+  }
+
+  function appendChat(sender, text, color = '#34d399') {
+    const box = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.innerHTML = `<strong style="color:${color}">${esc(sender)}:</strong> ${esc(text)}`;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function updateHudCount() {
+    document.getElementById('hud-players').textContent = players.size;
+  }
+
+  // ==================== P2P NETWORKING (100% GITHUB PAGES) ====================
+  function hostBroadcast(msg, exceptId = null) {
+    guestConns.forEach((conn, pid) => {
+      if (pid !== exceptId && conn.open) {
+        conn.send(msg);
+      }
+    });
+  }
+
+  function sendPacket(msg) {
+    if (isHost) {
+      hostBroadcast(msg);
+    } else if (hostConn && hostConn.open) {
+      hostConn.send(msg);
+    }
+  }
+
+  function makePlayerObj(id, name, avatar) {
+    const sx = 410 + Math.floor(Math.random() * 140);
+    const sy = 268 + Math.floor(Math.random() * 24);
+    return {
+      id,
+      name: (name || 'นักเดินทาง').slice(0, 16),
+      avatar,
+      x: sx,
+      y: sy,
+      renderX: sx,
+      renderY: sy,
+      dir: 'down',
+      moving: false,
+      kneeling: false
+    };
+  }
+
+  function joinRoom(rawRoom, rawName, avatar) {
+    roomCode = (rawRoom || 'LOVE2026').toUpperCase().replace(/[^A-Z0-9]/g, '') || 'LOVE2026';
+    const hostId = 'katong-pakk49-room-' + roomCode;
+    document.getElementById('hud-room').textContent = roomCode;
+
+    const btnStart = document.getElementById('btn-start');
+    btnStart.disabled = true;
+    btnStart.textContent = 'กำลังเข้าสู่ริมแม่น้ำ...';
+
+    // Try creating room as Host first
+    peer = new Peer(hostId, PEER_OPTS);
+
+    peer.on('open', (id) => {
+      isHost = true;
+      selfId = id;
+      const me = makePlayerObj(selfId, rawName, avatar);
+      players.set(selfId, me);
+      updateHudCount();
+
+      document.getElementById('status-dot').textContent = '🟢';
+      document.getElementById('modal-join').style.display = 'none';
+      appendChat('ระบบ', `เปิดห้อง ${roomCode} แล้ว! กดปุ่ม "🔗 ชวนแฟน" ด้านบนส่งให้แฟนได้เลย 💕`, '#fbbf24');
+
+      peer.on('connection', (conn) => {
+        conn.on('open', () => {
+          guestConns.set(conn.peer, conn);
+        });
+        conn.on('data', (data) => onHostData(conn, data));
+        conn.on('close', () => {
+          guestConns.delete(conn.peer);
+          const p = players.get(conn.peer);
+          if (p) {
+            appendChat('ระบบ', `${p.name} ออกจากห้องแล้ว`, '#94a3b8');
+            players.delete(conn.peer);
+            updateHudCount();
+            hostBroadcast({ type: 'left', id: conn.peer });
+          }
+        });
+      });
+    });
+
+    peer.on('error', (err) => {
+      if (err.type === 'unavailable-id') {
+        // Room already exists -> join as Guest
+        peer.destroy();
+        connectGuest(hostId, rawName, avatar);
+      } else {
+        btnStart.disabled = false;
+        btnStart.textContent = 'เข้าสู่ริมแม่น้ำ ✨';
+        showToast('⚠️ เชื่อมต่อไม่สำเร็จ กรุณากดเข้าห้องอีกครั้ง (' + err.type + ')');
+      }
+    });
+  }
+
+  function connectGuest(hostId, rawName, avatar) {
+    isHost = false;
+    peer = new Peer(PEER_OPTS);
+
+    peer.on('open', (id) => {
+      selfId = id;
+      const me = makePlayerObj(selfId, rawName, avatar);
+      players.set(selfId, me);
+      updateHudCount();
+
+      hostConn = peer.connect(hostId, { reliable: true });
+
+      hostConn.on('open', () => {
+        document.getElementById('status-dot').textContent = '🟢';
+        document.getElementById('modal-join').style.display = 'none';
+        hostConn.send({ type: 'join', player: me });
+        appendChat('ระบบ', `เชื่อมต่อเข้าห้อง ${roomCode} สำเร็จแล้ว 💕`, '#fbbf24');
+      });
+
+      hostConn.on('data', (data) => onGuestData(data));
+
+      hostConn.on('close', () => {
+        document.getElementById('status-dot').textContent = '🔴';
+        appendChat('ระบบ', 'เจ้าของห้องปิดหน้าเว็บไปแล้ว กรุณารีเฟรชเพื่อสร้างห้องใหม่', '#f87171');
+      });
+    });
+
+    peer.on('error', (err) => {
+      const btnStart = document.getElementById('btn-start');
+      btnStart.disabled = false;
+      btnStart.textContent = 'เข้าสู่ริมแม่น้ำ ✨';
+      showToast('⚠️ ไม่พบห้องหรือเน็ตขัดข้อง ลองกดอีกครั้ง (' + err.type + ')');
+    });
+  }
+
+  function onHostData(conn, msg) {
+    if (!msg || !msg.type) return;
+
+    if (msg.type === 'join' && msg.player) {
+      const np = msg.player;
+      np.id = conn.peer;
+      np.renderX = np.x;
+      np.renderY = np.y;
+      players.set(np.id, np);
+      updateHudCount();
+      appendChat('ระบบ', `${np.name} เดินทางมาถึงริมแม่น้ำแล้ว 💕`, '#f472b6');
+
+      // Send full room state to the new guest
+      conn.send({
+        type: 'init',
+        players: Array.from(players.values()),
+        krathongs
+      });
+
+      // Notify any other guests
+      hostBroadcast({ type: 'joined', player: np }, conn.peer);
+    } else if (msg.type === 'move') {
+      const p = players.get(conn.peer);
+      if (p) {
+        p.x = msg.x; p.y = msg.y; p.dir = msg.dir; p.moving = msg.moving; p.kneeling = msg.kneeling;
+        hostBroadcast({ type: 'move', id: conn.peer, x: p.x, y: p.y, dir: p.dir, moving: p.moving, kneeling: p.kneeling }, conn.peer);
+      }
+    } else if (msg.type === 'chat') {
+      const p = players.get(conn.peer);
+      const name = p ? p.name : 'เพื่อน';
+      appendChat(name, msg.text);
+      bubbles.set(conn.peer, { text: msg.text, exp: Date.now() + 5500 });
+      hostBroadcast({ type: 'chat', id: conn.peer, text: msg.text }, conn.peer);
+    } else if (msg.type === 'emote') {
+      spawnEmote(conn.peer, msg.emoji);
+      hostBroadcast({ type: 'emote', id: conn.peer, emoji: msg.emoji }, conn.peer);
+    } else if (msg.type === 'krathong') {
+      krathongs.push(msg.krathong);
+      if (krathongs.length > 60) krathongs.shift();
+      appendChat('🪷', `${msg.krathong.owner} ลอยกระทง: "${msg.krathong.wish}"`, '#fde047');
+      hostBroadcast({ type: 'krathong', krathong: msg.krathong }, conn.peer);
+    } else if (msg.type === 'lantern') {
+      spawnLantern(msg.x, msg.owner);
+      hostBroadcast({ type: 'lantern', x: msg.x, owner: msg.owner }, conn.peer);
+    }
+  }
+
+  function onGuestData(msg) {
+    if (!msg || !msg.type) return;
+
+    if (msg.type === 'init') {
+      msg.players.forEach(p => {
+        if (p.id === selfId) return;
+        p.renderX = p.x;
+        p.renderY = p.y;
+        players.set(p.id, p);
+      });
+      krathongs = msg.krathongs || [];
+      updateHudCount();
+    } else if (msg.type === 'joined' && msg.player) {
+      if (msg.player.id !== selfId) {
+        msg.player.renderX = msg.player.x;
+        msg.player.renderY = msg.player.y;
+        players.set(msg.player.id, msg.player);
+        updateHudCount();
+        appendChat('ระบบ', `${msg.player.name} เข้ามาในห้องแล้ว 💕`, '#f472b6');
+      }
+    } else if (msg.type === 'move') {
+      const p = players.get(msg.id);
+      if (p && msg.id !== selfId) {
+        p.x = msg.x; p.y = msg.y; p.dir = msg.dir; p.moving = msg.moving; p.kneeling = msg.kneeling;
+      }
+    } else if (msg.type === 'sync') {
+      msg.players.forEach(sp => {
+        if (sp.id === selfId) return;
+        let p = players.get(sp.id);
+        if (!p) {
+          sp.renderX = sp.x; sp.renderY = sp.y;
+          players.set(sp.id, sp);
+        } else {
+          p.x = sp.x; p.y = sp.y; p.dir = sp.dir; p.moving = sp.moving; p.kneeling = sp.kneeling;
+        }
+      });
+      updateHudCount();
+    } else if (msg.type === 'chat') {
+      const p = players.get(msg.id);
+      appendChat(p ? p.name : 'แฟน', msg.text);
+      bubbles.set(msg.id, { text: msg.text, exp: Date.now() + 5500 });
+    } else if (msg.type === 'emote') {
+      spawnEmote(msg.id, msg.emoji);
+    } else if (msg.type === 'krathong') {
+      krathongs.push(msg.krathong);
+      if (krathongs.length > 60) krathongs.shift();
+      appendChat('🪷', `${msg.krathong.owner} ลอยกระทง: "${msg.krathong.wish}"`, '#fde047');
+    } else if (msg.type === 'lantern') {
+      spawnLantern(msg.x, msg.owner);
+    } else if (msg.type === 'left') {
+      const p = players.get(msg.id);
+      if (p) appendChat('ระบบ', `${p.name} ออกจากห้องแล้ว`, '#94a3b8');
+      players.delete(msg.id);
+      updateHudCount();
+    }
+  }
+
+  function spawnEmote(playerId, emoji) {
+    const p = players.get(playerId);
+    if (!p) return;
+    emotes.push({ x: p.renderX, y: p.renderY - 46, emoji, life: 1.0 });
+  }
+
+  function spawnLantern(x, owner) {
+    lanterns.push({
+      x: x + (Math.random() * 24 - 12),
+      y: 260,
+      vx: 0.25 + Math.random() * 0.25,
+      vy: -0.65 - Math.random() * 0.25,
+      seed: Math.random() * 5000,
+      owner
+    });
+    appendChat('🏮', `${owner} ปล่อยโคมลอยขึ้นสู่ท้องฟ้า ✨`, '#fb923c');
+  }
+
+  // ==================== UI EVENTS ====================
+  document.getElementById('btn-start').onclick = () => {
+    const name = document.getElementById('inp-name').value.trim() || 'คู่รักนักเดินทาง';
+    const room = document.getElementById('inp-room').value.trim() || initialRoom;
+    const hairStyle = Number(document.getElementById('inp-hair-style').value);
+    joinRoom(room, name, {
+      skin: selSkin,
+      hairColor: selHair,
+      hairStyle,
+      outfitColor: selOutfit
+    });
+  };
+
+  document.getElementById('btn-invite').onclick = () => {
+    const url = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).catch(() => {});
+    }
+    showToast(`📋 คัดลอกลิงก์ห้อง <strong>${roomCode}</strong> แล้ว!<br><span style="font-size:11px;color:#cbd5e1">${url}</span>`, 6000);
+  };
+
+  document.getElementById('btn-hold-hands').onclick = () => {
+    holdingHands = !holdingHands;
+    const btn = document.getElementById('btn-hold-hands');
+    btn.classList.toggle('active', holdingHands);
+    if (holdingHands) {
+      clickTarget = null;
+      showToast('🤝 เปิดโหมดจับมือเดินข้างแฟนแล้ว!');
+    } else {
+      showToast('ปล่อยมือแล้ว เดินอิสระได้');
+    }
+  };
+
+  document.getElementById('btn-lantern').onclick = () => {
+    const me = players.get(selfId);
+    if (!me) return;
+    spawnLantern(me.x, me.name);
+    sendPacket({ type: 'lantern', x: me.x, owner: me.name });
+  };
+
+  document.getElementById('chat-form').onsubmit = (e) => {
+    e.preventDefault();
+    const inp = document.getElementById('chat-input');
+    const text = inp.value.trim();
+    if (!text || !selfId) return;
+    inp.value = '';
+    const me = players.get(selfId);
+    appendChat(me ? me.name : 'ฉัน', text);
+    bubbles.set(selfId, { text, exp: Date.now() + 5500 });
+    sendPacket({ type: 'chat', text });
+  };
+
+  document.querySelectorAll('.emote-btn').forEach(btn => {
+    btn.onclick = () => {
+      if (!selfId) return;
+      const emoji = btn.dataset.emote;
+      spawnEmote(selfId, emoji);
+      sendPacket({ type: 'emote', emoji });
+    };
+  });
+
+  // Krathong Modal
+  document.getElementById('btn-krathong').onclick = () => {
+    document.getElementById('modal-krathong').style.display = 'flex';
+  };
+  document.getElementById('btn-k-cancel').onclick = () => {
+    document.getElementById('modal-krathong').style.display = 'none';
+  };
+  document.getElementById('btn-k-launch').onclick = () => {
+    const style = document.getElementById('k-style').value;
+    const candleColor = document.getElementById('k-candle').value;
+    const wish = document.getElementById('k-wish').value.trim() || 'ขอให้เรารักกันนานๆ มีความสุขด้วยกันตลอดไป';
+    document.getElementById('modal-krathong').style.display = 'none';
+
+    const me = players.get(selfId);
+    if (!me) return;
+
+    holdingHands = false;
+    document.getElementById('btn-hold-hands').classList.remove('active');
+    clickTarget = null;
+
+    // Move to shoreline & kneel
+    me.y = 312;
+    me.dir = 'down';
+    me.kneeling = true;
+    sendPacket({ type: 'move', x: me.x, y: me.y, dir: me.dir, moving: false, kneeling: true });
+
+    const kObj = {
+      id: selfId + '_' + Date.now(),
+      owner: me.name,
+      wish,
+      style,
+      candleColor,
+      x: me.x,
+      y: 342,
+      vx: 0.35 + Math.random() * 0.2,
+      vy: 0.14 + Math.random() * 0.08,
+      seed: Math.floor(Math.random() * 6000)
+    };
+
+    krathongs.push(kObj);
+    if (krathongs.length > 60) krathongs.shift();
+    appendChat('🪷', `${me.name} ลอยกระทง: "${wish}"`, '#fde047');
+    sendPacket({ type: 'krathong', krathong: kObj });
+
+    setTimeout(() => {
+      if (players.get(selfId)) {
+        players.get(selfId).kneeling = false;
+        sendPacket({ type: 'move', x: me.x, y: me.y, dir: 'down', moving: false, kneeling: false });
+      }
+    }, 1500);
+  };
+
+  // Input Controls (Keyboard + Tap/Click)
   window.addEventListener('keydown', e => {
     if (document.activeElement.tagName === 'INPUT') return;
     keys[e.key.toLowerCase()] = true;
-    targetPos = null;
+    clickTarget = null;
+    if (holdingHands) {
+      holdingHands = false;
+      document.getElementById('btn-hold-hands').classList.remove('active');
+    }
   });
-  window.addEventListener('keyup', e => {
-    keys[e.key.toLowerCase()] = false;
-  });
+  window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 
   canvas.addEventListener('click', (e) => {
     const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const clickX = (e.clientX - rect.left) * scaleX;
-    const clickY = (e.clientY - rect.top) * scaleY;
+    const cx = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const cy = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-    // เช็คว่าคลิกโดนกระทงในน้ำเพื่ออ่านคำอธิษฐานหรือไม่
+    // Check if clicked on a floating krathong
     for (let i = krathongs.length - 1; i >= 0; i--) {
       const k = krathongs[i];
-      if (Math.hypot(clickX - k.x, clickY - k.y) < 24) {
-        showWishToast(`🪷 กระทงของ <strong>${escapeHtml(k.ownerName)}</strong>: "${escapeHtml(k.wish)}"`);
+      if (Math.hypot(cx - k.x, cy - k.y) < 26) {
+        showToast(`🪷 กระทงของ <strong>${esc(k.owner)}</strong><br>"${esc(k.wish)}"`, 5000);
         return;
       }
     }
 
-    // ถ้าคลิกบนฝั่ง ให้เดินไปจุดนั้น
-    if (clickY >= 150 && clickY <= 318) {
-      targetPos = { x: Math.max(50, Math.min(910, clickX)), y: clickY };
-    } else if (clickY > 318) {
-      // คลิกในน้ำ -> เดินมาริมตลิ่งตรงจุดนั้น
-      targetPos = { x: Math.max(50, Math.min(910, clickX)), y: 312 };
+    // Walk on shore
+    if (holdingHands) {
+      holdingHands = false;
+      document.getElementById('btn-hold-hands').classList.remove('active');
     }
+    const targetX = Math.max(125, Math.min(915, cx));
+    const targetY = cy > 316 ? 314 : Math.max(150, cy);
+    clickTarget = { x: targetX, y: targetY };
   });
 
-  function showWishToast(html) {
-    const toast = document.getElementById('wish-toast');
-    toast.innerHTML = html;
-    toast.style.display = 'block';
-    clearTimeout(toast._timer);
-    toast._timer = setTimeout(() => toast.style.display = 'none', 5000);
-  }
-
-  function escapeHtml(str) {
-    return str.replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
-  }
-
-  function addChatLog(name, text) {
-    const log = document.getElementById('chat-log');
-    const row = document.createElement('div');
-    row.innerHTML = `<strong style="color:#7bed9f">${escapeHtml(name)}:</strong> ${escapeHtml(text)}`;
-    log.appendChild(row);
-    log.scrollTop = log.scrollHeight;
-  }
-
-  // ปุ่มเข้าห้อง
-  document.getElementById('join-btn').onclick = () => {
-    const name = document.getElementById('input-name').value.trim() || 'คู่รักนักเดินทาง';
-    const roomId = document.getElementById('input-room').value.trim().toUpperCase() || defaultRoom;
-    const hairStyle = Number(document.getElementById('input-hair-style').value);
-
-    socket.emit('join_room', {
-      roomId,
-      name,
-      avatar: {
-        skin: '#f1c27d',
-        hairColor: selectedHair,
-        hairStyle,
-        outfitColor: selectedOutfit
-      }
-    });
-
-    document.getElementById('join-modal').style.display = 'none';
-  };
-
-  // คัดลอกลิงก์ชวนแฟน
-  document.getElementById('copy-invite-btn').onclick = () => {
-    const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${currentRoom}`;
-    navigator.clipboard.writeText(inviteUrl);
-    showWishToast(`📋 คัดลอกลิงก์ห้อง <strong>${currentRoom}</strong> แล้ว! ส่งให้แฟนกดเข้ามาเจอกันได้เลย`);
-  };
-
-  // ระบบแชท
-  function sendChat() {
-    const input = document.getElementById('chat-input');
-    const text = input.value.trim();
-    if (!text) return;
-    socket.emit('player_chat', text);
-    input.value = '';
-  }
-  document.getElementById('send-chat-btn').onclick = sendChat;
-  document.getElementById('chat-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') sendChat();
-  });
-
-  // อีโมจิ
-  document.querySelectorAll('.emote-btn').forEach(btn => {
-    btn.onclick = () => socket.emit('player_emote', btn.dataset.emote);
-  });
-
-  // ระบบทำกระทง
-  document.getElementById('open-krathong-btn').onclick = () => {
-    document.getElementById('krathong-modal').style.display = 'flex';
-  };
-  document.getElementById('close-krathong-btn').onclick = () => {
-    document.getElementById('krathong-modal').style.display = 'none';
-  };
-  document.getElementById('confirm-krathong-btn').onclick = () => {
-    const style = document.getElementById('krathong-style').value;
-    const candleColor = document.getElementById('krathong-candle').value;
-    const wish = document.getElementById('krathong-wish').value.trim() || 'ขอให้มีความสุขและรักกันตลอดไป';
-
-    document.getElementById('krathong-modal').style.display = 'none';
-
-    const me = players.get(selfId);
-    if (me) {
-      // เดินลงมาชิดริมน้ำแล้วย่อตัวปล่อยกระทง
-      me.y = 310;
-      me.dir = 'down';
-      me.kneeling = true;
-      socket.emit('player_move', me);
-      socket.emit('launch_krathong', { style, candleColor, wish });
-
-      setTimeout(() => {
-        if (players.get(selfId)) {
-          players.get(selfId).kneeling = false;
-          socket.emit('player_move', players.get(selfId));
-        }
-      }, 1500);
-    }
-  };
-
-  // Socket Listeners
-  socket.on('init_state', (data) => {
-    selfId = data.selfId;
-    currentRoom = data.roomId;
-    document.getElementById('hud-room').textContent = currentRoom;
-
-    players.clear();
-    data.players.forEach(p => {
-      p.renderX = p.x;
-      p.renderY = p.y;
-      players.set(p.id, p);
-    });
-    krathongs = data.krathongs || [];
-    updatePlayerCount();
-  });
-
-  socket.on('player_joined', (p) => {
-    p.renderX = p.x;
-    p.renderY = p.y;
-    players.set(p.id, p);
-    updatePlayerCount();
-    addChatLog('ระบบ', `${p.name} เดินทางมาถึงริมแม่น้ำแล้ว 💕`);
-  });
-
-  socket.on('player_moved', (data) => {
-    const p = players.get(data.id);
-    if (!p) return;
-    p.x = data.x;
-    p.y = data.y;
-    p.dir = data.dir;
-    p.moving = data.moving;
-    p.kneeling = data.kneeling;
-  });
-
-  socket.on('player_chatted', (data) => {
-    const p = players.get(data.id);
-    const name = p ? p.name : 'ผู้เล่น';
-    addChatLog(name, data.text);
-    chatBubbles.set(data.id, { text: data.text, expires: Date.now() + 5000 });
-  });
-
-  socket.on('player_emoted', (data) => {
-    const p = players.get(data.id);
-    if (!p) return;
-    floatingEmotes.push({
-      x: p.renderX,
-      y: p.renderY - 42,
-      emoji: data.emoji,
-      alpha: 1
-    });
-  });
-
-  socket.on('krathong_launched', (k) => {
-    krathongs.push(k);
-    addChatLog('🪷', `${k.ownerName} ลอยกระทงแล้ว: "${k.wish}"`);
-  });
-
-  socket.on('player_left', (id) => {
-    const p = players.get(id);
-    if (p) addChatLog('ระบบ', `${p.name} ออกจากห้องแล้ว`);
-    players.delete(id);
-    updatePlayerCount();
-  });
-
-  function updatePlayerCount() {
-    document.getElementById('hud-count').textContent = players.size;
-  }
-
-  // ==================== PIXEL ART SCENE RENDERER ====================
-  function drawBackground(time) {
-    // 1. สนามหญ้าริมฝั่ง (ด้านบน)
-    ctx.fillStyle = '#274e2b';
+  // ==================== PIXEL ART RENDERER ====================
+  function drawScene(t) {
+    // 1. Lush forest grass background
+    ctx.fillStyle = '#264e27';
     ctx.fillRect(0, 0, 960, 290);
 
-    // ลวดลายหญ้าและพุ่มไม้เล็กๆ
-    ctx.fillStyle = '#1e3f22';
-    for (let x = 20; x < 940; x += 65) {
-      for (let y = 30; y < 250; y += 55) {
-        ctx.fillRect(x, y, 8, 4);
-        ctx.fillRect(x + 4, y - 4, 4, 4);
+    // Grass texture blades
+    ctx.fillStyle = '#1d3e1e';
+    for (let gx = 130; gx < 950; gx += 48) {
+      for (let gy = 25; gy < 255; gy += 44) {
+        ctx.fillRect(gx, gy, 6, 3);
+        ctx.fillRect(gx + 3, gy - 3, 3, 3);
       }
     }
 
-    // 2. หน้าผาหิน & น้ำตกมุมซ้ายบน (สไตล์ในรูป)
-    ctx.fillStyle = '#2c353d';
-    ctx.fillRect(0, 0, 250, 240);
-    ctx.fillStyle = '#3d4852';
-    ctx.fillRect(140, 40, 120, 210);
-    ctx.fillStyle = '#53616e';
-    ctx.fillRect(155, 55, 90, 170);
+    // 2. Left rocky cliff & waterfall (like reference image)
+    ctx.fillStyle = '#232b32';
+    ctx.fillRect(0, 0, 250, 255);
+    ctx.fillStyle = '#36414b';
+    ctx.fillRect(130, 30, 125, 225);
+    ctx.fillStyle = '#4b5866';
+    ctx.fillRect(145, 50, 95, 185);
+    // Glowing blue crystals on cliff
+    ctx.fillStyle = '#7dd3fc';
+    ctx.fillRect(172, 74, 4, 4);
+    ctx.fillRect(205, 118, 4, 4);
 
-    // สายน้ำตกไหลลงแม่น้ำ
-    ctx.fillStyle = '#2a6f97';
-    ctx.fillRect(0, 0, 125, 310);
-    ctx.fillStyle = '#4ea8de';
-    const wfOffset = Math.floor(time / 60) % 24;
-    for (let y = wfOffset - 24; y < 305; y += 24) {
-      ctx.fillRect(18, y, 16, 14);
-      ctx.fillRect(54, y + 8, 22, 14);
-      ctx.fillRect(92, y + 2, 14, 14);
+    // Waterfall stream
+    ctx.fillStyle = '#1e6091';
+    ctx.fillRect(0, 0, 124, 316);
+    ctx.fillStyle = '#38bdf8';
+    const wfShift = Math.floor(t / 55) % 24;
+    for (let wy = wfShift - 24; wy < 312; wy += 24) {
+      ctx.fillRect(16, wy, 18, 15);
+      ctx.fillRect(52, wy + 8, 24, 15);
+      ctx.fillRect(92, wy + 3, 16, 15);
     }
-    // ฟองคลื่นตรงฐานน้ำตก
-    ctx.fillStyle = '#caf0f8';
-    ctx.fillRect(8, 296 + Math.sin(time / 150) * 2, 112, 8);
+    // Waterfall base splash foam
+    ctx.fillStyle = '#e0f2fe';
+    ctx.fillRect(6, 304 + Math.sin(t / 140) * 2, 114, 9);
 
-    // 3. ลานพิธีบูชาและแท่นหินกลางฝั่ง (เหมือนในรูป)
-    ctx.fillStyle = '#5c3a21';
+    // 3. Center Sacred Stone Altar & Ceremonial Ground (like reference image)
+    ctx.fillStyle = '#5e3a20';
     ctx.beginPath();
-    ctx.ellipse(540, 130, 135, 68, 0, 0, Math.PI * 2);
+    ctx.ellipse(540, 128, 145, 72, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = '#7f5539';
+    ctx.strokeStyle = '#7c4d2b';
     ctx.lineWidth = 4;
     ctx.stroke();
 
-    // แท่นหินศักดิ์สิทธิ์ + ดอกไม้ + เทียน
-    ctx.fillStyle = '#8d7b68';
-    ctx.fillRect(515, 55, 50, 65);
-    ctx.fillStyle = '#a4907c';
-    ctx.fillRect(522, 42, 36, 20);
-    // กระถางดอกไม้ซ้าย-ขวา
-    ctx.fillStyle = '#b5651d';
-    ctx.fillRect(480, 92, 24, 22);
-    ctx.fillRect(576, 92, 24, 22);
-    ctx.fillStyle = '#ffbe0b';
-    ctx.fillRect(482, 82, 20, 10);
-    ctx.fillStyle = '#ff006e';
-    ctx.fillRect(578, 82, 20, 10);
+    // Tribal geometric floor markings
+    ctx.fillStyle = '#3e2412';
+    ctx.fillRect(575, 120, 42, 4);
+    ctx.fillRect(594, 106, 4, 32);
 
-    // 4. ตลิ่งปูหินกรวดริมน้ำ
-    ctx.fillStyle = '#9c9283';
-    ctx.fillRect(110, 265, 850, 48);
-    ctx.fillStyle = '#b7ad9e';
-    for (let x = 118; x < 950; x += 26) {
-      for (let y = 270; y < 306; y += 16) {
-        ctx.fillRect(x + (y % 32 === 0 ? 8 : 0), y, 18, 10);
+    // Stone Totem Monolith
+    ctx.fillStyle = '#8c7a6b';
+    ctx.fillRect(514, 52, 52, 68);
+    ctx.fillStyle = '#a89686';
+    ctx.fillRect(522, 38, 36, 22);
+    // Flower garland on totem
+    ctx.fillStyle = '#facc15';
+    ctx.fillRect(516, 68, 48, 5);
+
+    // Flower Pots left & right
+    ctx.fillStyle = '#9a3412';
+    ctx.fillRect(476, 92, 24, 24);
+    ctx.fillRect(580, 92, 24, 24);
+    ctx.fillStyle = '#facc15';
+    ctx.fillRect(478, 82, 20, 10);
+    ctx.fillStyle = '#f43f5e';
+    ctx.fillRect(582, 82, 20, 10);
+
+    // Altar Candles
+    [[498, 106], [572, 106]].forEach(([cx, cy], idx) => {
+      ctx.fillStyle = '#fef3c7';
+      ctx.fillRect(cx, cy, 8, 14);
+      ctx.fillStyle = '#fb923c';
+      ctx.fillRect(cx + 2, cy - 5 + Math.sin(t / 90 + idx), 4, 5);
+    });
+
+    // Wooden ritual bench
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(508, 134, 64, 12);
+
+    // 4. Cobblestone Shoreline Bank
+    ctx.fillStyle = '#968c7e';
+    ctx.fillRect(114, 264, 846, 50);
+    ctx.fillStyle = '#b5ab9c';
+    for (let px = 122; px < 950; px += 28) {
+      for (let py = 269; py < 307; py += 16) {
+        ctx.fillRect(px + (py % 32 === 0 ? 10 : 0), py, 19, 10);
       }
     }
-    // ขอบหาดทราย/น้ำตื้น
-    ctx.fillStyle = '#e6ccb2';
-    ctx.fillRect(110, 310, 850, 8);
+    // Pale sand edge
+    ctx.fillStyle = '#e7d2b8';
+    ctx.fillRect(114, 311, 846, 8);
 
-    // 5. แม่น้ำยามค่ำคืน
-    const waterGrad = ctx.createLinearGradient(0, 318, 0, 540);
-    waterGrad.addColorStop(0, '#1d7874');
-    waterGrad.addColorStop(0.35, '#114b5f');
-    waterGrad.addColorStop(1, '#072227');
-    ctx.fillStyle = waterGrad;
-    ctx.fillRect(0, 318, 960, 222);
+    // 5. River Water (Shallow pebbled turquoise -> Deep night teal)
+    const grad = ctx.createLinearGradient(0, 319, 0, 540);
+    grad.addColorStop(0, '#1f7a74');
+    grad.addColorStop(0.28, '#135263');
+    grad.addColorStop(1, '#062029');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 319, 960, 221);
 
-    // ระลอกคลื่นน้ำตื้น
-    ctx.fillStyle = 'rgba(168, 237, 234, 0.25)';
-    const waveShift = Math.sin(time / 400) * 6;
-    for (let x = 120; x < 940; x += 34) {
-      ctx.fillRect(x + waveShift, 326, 20, 5);
-      ctx.fillRect(x - waveShift + 10, 342, 16, 4);
+    // Shallow river pebbles & ripples
+    ctx.fillStyle = 'rgba(167, 243, 208, 0.22)';
+    const ripple = Math.sin(t / 380) * 6;
+    for (let rx = 124; rx < 945; rx += 32) {
+      ctx.fillRect(rx + ripple, 327, 18, 5);
+      ctx.fillRect(rx - ripple + 8, 344, 16, 4);
+      ctx.fillRect(rx + ripple * 0.6, 362, 14, 4);
     }
 
-    // 6. คบเพลิงจุดไฟริมตลิ่ง (ให้แสงอบอุ่น)
-    const torchPositions = [275, 575, 815];
-    torchPositions.forEach((tx, idx) => {
-      ctx.fillStyle = '#4a2c11';
-      ctx.fillRect(tx - 3, 215, 6, 48);
-      const flicker = Math.sin(time / 90 + idx) * 2;
-      // แสงไฟเรืองรอง
-      const glow = ctx.createRadialGradient(tx, 210, 2, tx, 210, 36);
-      glow.addColorStop(0, 'rgba(255, 190, 11, 0.75)');
-      glow.addColorStop(1, 'rgba(255, 190, 11, 0)');
+    // 6. Warm Glowing Torches along bank and shallow water
+    const torches = [
+      [270, 214], [575, 214], [810, 214],
+      [230, 318], [625, 322]
+    ];
+    torches.forEach(([tx, ty], i) => {
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(tx - 3, ty, 6, 46);
+      const glow = ctx.createRadialGradient(tx, ty - 4, 2, tx, ty - 4, 38);
+      glow.addColorStop(0, 'rgba(251, 191, 36, 0.75)');
+      glow.addColorStop(1, 'rgba(251, 191, 36, 0)');
       ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.arc(tx, 210, 36, 0, Math.PI * 2);
+      ctx.arc(tx, ty - 4, 38, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.fillStyle = '#ff9f1c';
-      ctx.fillRect(tx - 4, 204 + flicker, 8, 10);
-      ctx.fillStyle = '#fff3b0';
-      ctx.fillRect(tx - 2, 207 + flicker, 4, 6);
+      const fl = Math.sin(t / 85 + i) * 2;
+      ctx.fillStyle = '#f97316';
+      ctx.fillRect(tx - 4, ty - 10 + fl, 8, 10);
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(tx - 2, ty - 7 + fl, 4, 6);
     });
   }
 
-  function drawKrathong(k, time) {
-    const bob = Math.sin((time + k.seed) / 350) * 2;
+  function drawKrathong(k, t) {
+    const bob = Math.sin((t + k.seed) / 340) * 2;
     const x = k.x;
     const y = k.y + bob;
 
-    // แสงสะท้อนสีเขียวมรกต-ทองบนผิวน้ำรอบกระทง (แบบในรูป)
-    const aura = ctx.createRadialGradient(x, y, 2, x, y, 26);
-    aura.addColorStop(0, 'rgba(100, 255, 218, 0.55)');
-    aura.addColorStop(0.5, 'rgba(255, 221, 85, 0.25)');
-    aura.addColorStop(1, 'rgba(100, 255, 218, 0)');
+    // Emerald-gold glow aura on water (like reference image)
+    const aura = ctx.createRadialGradient(x, y, 2, x, y, 28);
+    aura.addColorStop(0, 'rgba(110, 231, 183, 0.58)');
+    aura.addColorStop(0.5, 'rgba(253, 224, 71, 0.25)');
+    aura.addColorStop(1, 'rgba(110, 231, 183, 0)');
     ctx.fillStyle = aura;
     ctx.beginPath();
-    ctx.arc(x, y, 26, 0, Math.PI * 2);
+    ctx.arc(x, y, 28, 0, Math.PI * 2);
     ctx.fill();
 
-    // ฐานกระทงตามสไตล์ที่เลือก
     if (k.style === 'raft') {
-      ctx.fillStyle = '#8d5524';
-      ctx.fillRect(x - 12, y - 3, 24, 8);
-      ctx.fillStyle = '#c68642';
-      ctx.fillRect(x - 10, y - 5, 20, 4);
+      ctx.fillStyle = '#854d0e';
+      ctx.fillRect(x - 13, y - 3, 26, 8);
+      ctx.fillStyle = '#ca8a04';
+      ctx.fillRect(x - 11, y - 5, 22, 4);
     } else if (k.style === 'leaf') {
-      ctx.fillStyle = '#2ecc71';
+      ctx.fillStyle = '#22c55e';
       ctx.beginPath();
       ctx.ellipse(x, y, 13, 6, 0, 0, Math.PI * 2);
       ctx.fill();
+    } else if (k.style === 'heart') {
+      ctx.fillStyle = '#fb7185';
+      ctx.beginPath();
+      ctx.arc(x - 5, y - 2, 6, 0, Math.PI * 2);
+      ctx.arc(x + 5, y - 2, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillRect(x - 8, y, 16, 5);
     } else {
-      // กระทงดอกบัว
-      ctx.fillStyle = '#27ae60';
-      ctx.fillRect(x - 11, y - 2, 22, 6);
-      ctx.fillStyle = '#ff7979';
-      ctx.fillRect(x - 8, y - 6, 16, 5);
+      // Lotus krathong
+      ctx.fillStyle = '#16a34a';
+      ctx.fillRect(x - 12, y - 2, 24, 6);
+      ctx.fillStyle = '#f472b6';
+      ctx.fillRect(x - 9, y - 6, 18, 5);
+      ctx.fillStyle = '#fbcfe8';
+      ctx.fillRect(x - 5, y - 8, 10, 3);
     }
 
-    // เทียนและเปลวไฟ
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(x - 1.5, y - 11, 3, 6);
-    const flame = Math.sin(time / 80 + k.seed) * 1.5;
-    ctx.fillStyle = k.candleColor || '#ffdd55';
-    ctx.fillRect(x - 2.5, y - 16 + flame, 5, 5);
+    // Candle & flickering flame
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x - 1.5, y - 12, 3, 7);
+    const fl = Math.sin(t / 75 + k.seed) * 1.5;
+    ctx.fillStyle = k.candleColor || '#fde047';
+    ctx.fillRect(x - 2.5, y - 17 + fl, 5, 5);
   }
 
-  function drawPlayer(p, time) {
+  function drawCharacter(c, p, t, isPreview = false) {
     const x = Math.round(p.renderX);
     const y = Math.round(p.renderY);
-    const walkBob = p.moving ? Math.abs(Math.sin(time / 110)) * 3 : 0;
+    const walkBob = p.moving ? Math.abs(Math.sin(t / 105)) * 3 : 0;
     const squat = p.kneeling ? 6 : 0;
 
-    // เงาใต้เท้า
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
-    ctx.beginPath();
-    ctx.ellipse(x, y + 2, 11, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
+    // Ground shadow
+    c.fillStyle = 'rgba(0, 0, 0, 0.36)';
+    c.beginPath();
+    c.ellipse(x, y + 2, 11, 5, 0, 0, Math.PI * 2);
+    c.fill();
 
-    const bodyY = y - walkBob + squat;
+    const by = y - walkBob + squat;
+    const av = p.avatar;
 
-    // ขา
-    ctx.fillStyle = p.avatar.skin;
-    ctx.fillRect(x - 6, bodyY - 8, 4, 8 - squat / 2);
-    ctx.fillRect(x + 2, bodyY - 8, 4, 8 - squat / 2);
+    // Legs
+    c.fillStyle = av.skin;
+    c.fillRect(x - 6, by - 8, 4, 8 - squat / 2);
+    c.fillRect(x + 2, by - 8, 4, 8 - squat / 2);
 
-    // ลำตัว / ชุด
-    ctx.fillStyle = p.avatar.outfitColor;
-    ctx.fillRect(x - 8, bodyY - 22, 16, 15);
+    // Outfit / Tunic
+    c.fillStyle = av.outfitColor;
+    c.fillRect(x - 8, by - 23, 16, 16);
+    // Belt accent
+    c.fillStyle = 'rgba(255,255,255,0.25)';
+    c.fillRect(x - 8, by - 13, 16, 2);
 
-    // หัว
-    ctx.fillStyle = p.avatar.skin;
-    ctx.fillRect(x - 8, bodyY - 36, 16, 14);
+    // Head
+    c.fillStyle = av.skin;
+    c.fillRect(x - 8, by - 37, 16, 14);
 
-    // ดวงตา (หันตามทิศทาง)
-    ctx.fillStyle = '#1e272e';
+    // Eyes
+    c.fillStyle = '#1e293b';
     if (p.dir !== 'up') {
-      const eyeOffset = p.dir === 'left' ? -2 : p.dir === 'right' ? 2 : 0;
-      ctx.fillRect(x - 4 + eyeOffset, bodyY - 29, 2, 3);
-      ctx.fillRect(x + 2 + eyeOffset, bodyY - 29, 2, 3);
+      const eo = p.dir === 'left' ? -2 : p.dir === 'right' ? 2 : 0;
+      c.fillRect(x - 4 + eo, by - 30, 2, 3);
+      c.fillRect(x + 2 + eo, by - 30, 2, 3);
     }
 
-    // ทรงผม
-    ctx.fillStyle = p.avatar.hairColor;
-    ctx.fillRect(x - 9, bodyY - 39, 18, 6);
-    if (p.avatar.hairStyle === 1) {
-      // ผมยาว
-      ctx.fillRect(x - 10, bodyY - 35, 3, 14);
-      ctx.fillRect(x + 7, bodyY - 35, 3, 14);
-    } else if (p.avatar.hairStyle === 2) {
-      // มัดจุกบนหัว
-      ctx.fillRect(x - 3, bodyY - 44, 6, 5);
+    // Hair & Accessories
+    c.fillStyle = av.hairColor;
+    c.fillRect(x - 9, by - 40, 18, 6);
+    if (av.hairStyle === 1) {
+      // Long hair
+      c.fillRect(x - 10, by - 36, 3, 15);
+      c.fillRect(x + 7, by - 36, 3, 15);
+    } else if (av.hairStyle === 2) {
+      // Bun
+      c.fillRect(x - 3, by - 45, 6, 5);
+    } else if (av.hairStyle === 3) {
+      // Flower crown
+      c.fillStyle = '#f43f5e';
+      c.fillRect(x - 8, by - 41, 4, 3);
+      c.fillStyle = '#facc15';
+      c.fillRect(x - 2, by - 41, 4, 3);
+      c.fillStyle = '#38bdf8';
+      c.fillRect(x + 4, by - 41, 4, 3);
+    } else if (av.hairStyle === 4) {
+      // Tribal wolf hood (like reference image right side)
+      c.fillStyle = '#94a3b8';
+      c.fillRect(x - 10, by - 42, 20, 8);
+      c.fillRect(x - 10, by - 46, 4, 4);
+      c.fillRect(x + 6, by - 46, 4, 4);
+      c.fillStyle = '#cbd5e1';
+      c.fillRect(x - 10, by - 34, 3, 10);
+      c.fillRect(x + 7, by - 34, 3, 10);
     }
 
-    // ป้ายชื่อเหนือหัวแบบ Roblox
-    ctx.font = 'bold 11px Prompt, sans-serif';
-    ctx.textAlign = 'center';
-    const nameWidth = ctx.measureText(p.name).width + 10;
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.72)';
-    ctx.fillRect(x - nameWidth / 2, bodyY - 56, nameWidth, 15);
-    ctx.fillStyle = p.id === selfId ? '#ffd166' : '#ffffff';
-    ctx.fillText(p.name, x, bodyY - 45);
+    if (isPreview) return;
 
-    // กล่องข้อความแชทลอยบนหัวแบบ Roblox
-    const bubble = chatBubbles.get(p.id);
-    if (bubble && bubble.expires > Date.now()) {
-      ctx.font = '12px Prompt, sans-serif';
-      const bw = Math.min(200, ctx.measureText(bubble.text).width + 16);
+    // Roblox-style Nameplate
+    c.font = 'bold 11px Prompt, sans-serif';
+    c.textAlign = 'center';
+    const nw = c.measureText(p.name).width + 10;
+    c.fillStyle = 'rgba(13, 21, 32, 0.76)';
+    c.fillRect(x - nw / 2, by - 58, nw, 15);
+    c.fillStyle = p.id === selfId ? '#fde047' : '#ffffff';
+    c.fillText(p.name, x, by - 47);
+
+    // Roblox-style Overhead Chat Bubble
+    const b = bubbles.get(p.id);
+    if (b && b.exp > Date.now()) {
+      c.font = '12px Prompt, sans-serif';
+      const bw = Math.min(210, c.measureText(b.text).width + 18);
       const bx = x - bw / 2;
-      const by = bodyY - 82;
-
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.roundRect(bx, by, bw, 22, 8);
-      ctx.fill();
-
-      ctx.fillStyle = '#0f172a';
-      ctx.fillText(bubble.text, x, by + 15, 190);
+      const byBubble = by - 84;
+      c.fillStyle = '#ffffff';
+      c.beginPath();
+      c.roundRect(bx, byBubble, bw, 22, 8);
+      c.fill();
+      c.fillStyle = '#0f172a';
+      c.fillText(b.text, x, byBubble + 15, 196);
     }
   }
 
-  // Main Game Loop
-  let lastFrame = performance.now();
-  function loop(now) {
-    const dt = (now - lastFrame) / 1000;
-    lastFrame = now;
+  function drawLantern(l, t) {
+    const sway = Math.sin((t + l.seed) / 400) * 4;
+    const x = l.x + sway;
+    const y = l.y;
 
-    // อัปเดตการเดินของตัวเรา
+    const glow = ctx.createRadialGradient(x, y, 2, x, y, 24);
+    glow.addColorStop(0, 'rgba(251, 146, 60, 0.75)');
+    glow.addColorStop(1, 'rgba(251, 146, 60, 0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(x, y, 24, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#fb923c';
+    ctx.fillRect(x - 6, y - 9, 12, 16);
+    ctx.fillStyle = '#fef08a';
+    ctx.fillRect(x - 3, y - 5, 6, 9);
+  }
+
+  // ==================== MAIN LOOP ====================
+  let prevTime = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - prevTime) / 1000);
+    prevTime = now;
+
     const me = players.get(selfId);
     if (me && !me.kneeling) {
-      let dx = 0, dy = 0;
-      if (keys['w'] || keys['arrowup']) dy -= 1;
-      if (keys['s'] || keys['arrowdown']) dy += 1;
-      if (keys['a'] || keys['arrowleft']) dx -= 1;
-      if (keys['d'] || keys['arrowright']) dx += 1;
+      let vx = 0, vy = 0;
 
-      if (dx !== 0 || dy !== 0) {
-        const len = Math.hypot(dx, dy);
-        dx /= len; dy /= len;
-        me.x = Math.max(45, Math.min(915, me.x + dx * 135 * dt));
-        me.y = Math.max(155, Math.min(314, me.y + dy * 135 * dt));
-        me.moving = true;
-        me.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
-      } else if (targetPos) {
-        const dist = Math.hypot(targetPos.x - me.x, targetPos.y - me.y);
-        if (dist > 4) {
-          const vx = (targetPos.x - me.x) / dist;
-          const vy = (targetPos.y - me.y) / dist;
-          me.x += vx * 135 * dt;
-          me.y += vy * 135 * dt;
-          me.moving = true;
-          me.dir = Math.abs(vx) > Math.abs(vy) ? (vx > 0 ? 'right' : 'left') : (vy > 0 ? 'down' : 'up');
-        } else {
-          targetPos = null;
-          me.moving = false;
+      if (holdingHands && players.size > 1) {
+        // Find partner
+        let partner = null;
+        for (const [id, pl] of players.entries()) {
+          if (id !== selfId) { partner = pl; break; }
+        }
+        if (partner) {
+          const destX = Math.max(125, Math.min(915, partner.x + 24));
+          const destY = partner.y;
+          const d = Math.hypot(destX - me.x, destY - me.y);
+          if (d > 4) {
+            vx = (destX - me.x) / d;
+            vy = (destY - me.y) / d;
+            me.x += vx * 145 * dt;
+            me.y += vy * 145 * dt;
+            me.moving = true;
+            me.dir = Math.abs(vx) > Math.abs(vy) ? (vx > 0 ? 'right' : 'left') : (vy > 0 ? 'down' : 'up');
+          } else {
+            me.moving = false;
+            me.dir = partner.dir;
+          }
         }
       } else {
-        me.moving = false;
+        if (keys['w'] || keys['arrowup']) vy -= 1;
+        if (keys['s'] || keys['arrowdown']) vy += 1;
+        if (keys['a'] || keys['arrowleft']) vx -= 1;
+        if (keys['d'] || keys['arrowright']) vx += 1;
+
+        if (vx !== 0 || vy !== 0) {
+          const len = Math.hypot(vx, vy);
+          vx /= len; vy /= len;
+          me.x = Math.max(125, Math.min(915, me.x + vx * 140 * dt));
+          me.y = Math.max(150, Math.min(314, me.y + vy * 140 * dt));
+          me.moving = true;
+          me.dir = Math.abs(vx) > Math.abs(vy) ? (vx > 0 ? 'right' : 'left') : (vy > 0 ? 'down' : 'up');
+        } else if (clickTarget) {
+          const d = Math.hypot(clickTarget.x - me.x, clickTarget.y - me.y);
+          if (d > 4) {
+            const dx = (clickTarget.x - me.x) / d;
+            const dy = (clickTarget.y - me.y) / d;
+            me.x += dx * 140 * dt;
+            me.y += dy * 140 * dt;
+            me.moving = true;
+            me.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
+          } else {
+            clickTarget = null;
+            me.moving = false;
+          }
+        } else {
+          me.moving = false;
+        }
       }
 
-      // ส่งตำแหน่งให้แฟนแบบ Real-time (20 ครั้ง/วินาที)
-      if (now - lastSync > 50) {
-        lastSync = now;
-        socket.emit('player_move', {
+      if (now - lastNetSync > 50) {
+        lastNetSync = now;
+        sendPacket({
+          type: 'move',
           x: me.x,
           y: me.y,
           dir: me.dir,
@@ -853,49 +1308,91 @@
       }
     }
 
-    // Smooth Interpolation สำหรับผู้เล่นทุกคน
+    // Host periodic sync
+    if (isHost && now - lastHeartbeat > 1200) {
+      lastHeartbeat = now;
+      hostBroadcast({
+        type: 'sync',
+        players: Array.from(players.values())
+      });
+    }
+
+    // Interpolate players
     players.forEach(p => {
       p.renderX += (p.x - p.renderX) * 0.25;
       p.renderY += (p.y - p.renderY) * 0.25;
     });
 
-    // อัปเดตกระทงฝั่ง Client ให้ลอยลื่นๆ
-    krathongs.forEach(k => {
-      k.x += k.vx * 0.6;
-      k.y += k.vy * 0.35;
-    });
+    // Drift krathongs
+    for (let i = krathongs.length - 1; i >= 0; i--) {
+      const k = krathongs[i];
+      k.x += k.vx * 18 * dt;
+      k.y += k.vy * 10 * dt;
+      if (k.x > 1020 || k.y > 600) {
+        krathongs.splice(i, 1);
+      }
+    }
 
-    // วาดฉากทั้งหมด
+    // Rise lanterns
+    for (let i = lanterns.length - 1; i >= 0; i--) {
+      const l = lanterns[i];
+      l.x += l.vx * 20 * dt;
+      l.y += l.vy * 28 * dt;
+      if (l.y < -40) lanterns.splice(i, 1);
+    }
+
+    // Draw world
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBackground(now);
+    drawScene(now);
 
-    // วาดกระทงในน้ำ
+    // Draw click destination marker
+    if (clickTarget) {
+      ctx.strokeStyle = 'rgba(253, 224, 71, 0.75)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.ellipse(clickTarget.x, clickTarget.y, 8 + Math.sin(now / 150) * 2, 4, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
     krathongs.forEach(k => drawKrathong(k, now));
 
-    // วาดตัวละครเรียงตามแกน Y (Y-sorting) เพื่อความสมจริง
-    const sortedPlayers = Array.from(players.values()).sort((a, b) => a.renderY - b.renderY);
-    sortedPlayers.forEach(p => drawPlayer(p, now));
+    // Y-sort players
+    const sorted = Array.from(players.values()).sort((a, b) => a.renderY - b.renderY);
+    sorted.forEach(p => drawCharacter(ctx, p, now));
 
-    // วาดอีโมจิลอยขึ้นฟ้า
-    for (let i = floatingEmotes.length - 1; i >= 0; i--) {
-      const em = floatingEmotes[i];
-      em.y -= 35 * dt;
-      em.alpha -= 0.75 * dt;
-      if (em.alpha <= 0) {
-        floatingEmotes.splice(i, 1);
+    // Draw heart between couple if holding hands
+    if (holdingHands && sorted.length >= 2) {
+      const p1 = sorted[0];
+      const p2 = sorted[1];
+      if (Math.hypot(p1.renderX - p2.renderX, p1.renderY - p2.renderY) < 42) {
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('💕', (p1.renderX + p2.renderX) / 2, Math.min(p1.renderY, p2.renderY) - 24 + Math.sin(now / 200) * 2);
+      }
+    }
+
+    lanterns.forEach(l => drawLantern(l, now));
+
+    // Floating emotes
+    for (let i = emotes.length - 1; i >= 0; i--) {
+      const em = emotes[i];
+      em.y -= 36 * dt;
+      em.life -= 0.75 * dt;
+      if (em.life <= 0) {
+        emotes.splice(i, 1);
         continue;
       }
       ctx.save();
-      ctx.globalAlpha = em.alpha;
+      ctx.globalAlpha = Math.max(0, em.life);
       ctx.font = '22px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(em.emoji, em.x, em.y);
       ctx.restore();
     }
 
-    requestAnimationFrame(loop);
+    requestAnimationFrame(frame);
   }
-  requestAnimationFrame(loop);
+  requestAnimationFrame(frame);
 </script>
 </body>
 </html>
