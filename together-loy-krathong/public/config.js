@@ -1,2 +1,5 @@
-// ถ้า deploy หน้าเว็บแยกจากเซิร์ฟเวอร์ ให้ใส่ URL เซิร์ฟเวอร์ เช่น "https://my-krathong.onrender.com"
-window.SERVER_URL = "";
+window.GAME_CONFIG = {
+  // เว้นว่างไว้ถ้าเปิดเว็บจาก Server เดียวกัน (เช่น http://localhost:3000 หรือ Render URL)
+  // หรือใส่ URL ของ Render Server เช่น "https://your-app.onrender.com" หากใช้ GitHub Pages
+  SERVER_URL: ""
+};
